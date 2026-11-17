@@ -1,5 +1,5 @@
-@import url("base.css");
-@import url("sidenav.css");
+@import url("base.css?v=2026111705");
+@import url("sidenav.css?v=2026111705");
 
 /* ---------- tela do app (mapa e painel admin) ---------- */
 body.app {

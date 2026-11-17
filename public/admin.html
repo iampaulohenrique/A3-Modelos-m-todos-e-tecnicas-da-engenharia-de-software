@@ -7,16 +7,15 @@
   <meta name="description" content="Usuários, ocorrências e logs de auditoria do sistema.">
   <meta name="theme-color" content="#f5f6f2">
   <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
-  <script src="../js/theme.js"></script>
+  <script src="../js/theme.js?v=2026111705"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/admin.css?v=2026111705">
 </head>
 <body class="app">
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
 <header class="app-header">
   <div class="header-left">
-    <button class="icon-btn nav-open-btn" id="nav-open-btn" type="button" aria-controls="side-nav" aria-expanded="false" aria-label="Abrir menu"><i class="bi bi-list" aria-hidden="true"></i></button>
     <a class="brand" href="home.html" aria-label="Monitoramento Ambiental, página inicial">
       <span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
       <span class="brand-name">Monitoramento Ambiental</span>
@@ -28,34 +27,11 @@
       <span class="meta-status"><span class="status-dot" aria-hidden="true"></span>Sessão segura (admin)</span>
       <time id="clock" aria-label="Hora atual">--:--:--</time>
     </div>
+    <button class="icon-btn nav-open-btn" id="nav-open-btn" type="button" aria-controls="side-nav" aria-expanded="false" aria-label="Abrir menu"><i class="bi bi-list" aria-hidden="true"></i></button>
   </div>
 </header>
 
 <div class="layout">
-  <nav class="side-nav" id="side-nav" aria-label="Menu principal">
-    <div class="nav-group">
-      <span class="nav-heading">Navegação</span>
-      <a class="nav-item" href="home.html"><i class="bi bi-house" aria-hidden="true"></i><span class="nav-label">Início</span></a>
-      <a class="nav-item" href="index.html"><i class="bi bi-map" aria-hidden="true"></i><span class="nav-label">Mapa de ocorrências</span></a>
-      <a class="nav-item" href="admin.html" aria-current="page" data-nav-admin hidden><i class="bi bi-shield-lock" aria-hidden="true"></i><span class="nav-label">Painel admin</span></a>
-      <a class="nav-item" href="perfil.html" data-nav-user hidden><i class="bi bi-person-gear" aria-hidden="true"></i><span class="nav-label">Minha conta</span></a>
-    </div>
-
-    <div class="nav-group nav-bottom">
-      <button class="nav-item" type="button" data-theme-toggle aria-label="Mudar para o tema escuro"><i class="bi bi-moon-stars" aria-hidden="true"></i><span class="nav-label" data-theme-label>Tema escuro</span></button>
-      <button class="nav-item nav-collapse" type="button" id="nav-collapse-btn" aria-controls="side-nav" aria-expanded="true" aria-label="Recolher menu"><i class="bi bi-chevron-double-left" aria-hidden="true"></i><span class="nav-label">Recolher menu</span></button>
-    </div>
-
-    <div class="nav-group">
-      <a class="nav-user" id="nav-user" href="perfil.html" data-nav-user hidden>
-        <span class="nav-avatar" id="nav-avatar" aria-hidden="true">?</span>
-        <span class="nav-user-text"><span class="nav-user-name" id="nav-user-name">Minha conta</span><span class="nav-user-role" id="nav-user-role"></span></span>
-      </a>
-      <button class="nav-item nav-danger" type="button" id="nav-logout" data-nav-user hidden><i class="bi bi-box-arrow-right" aria-hidden="true"></i><span class="nav-label">Sair</span></button>
-      <a class="nav-item nav-cta" href="login.html?next=admin.html" data-nav-guest><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i><span class="nav-label">Entrar</span></a>
-    </div>
-  </nav>
-  <div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
 
   <aside class="sidebar" aria-label="Filtros e ações">
     <section class="panel" aria-labelledby="gestao-titulo">
@@ -134,11 +110,36 @@
       </div>
     </section>
   </main>
+
+  <nav class="side-nav" id="side-nav" aria-label="Menu principal">
+    <div class="nav-group">
+      <span class="nav-heading">Navegação</span>
+      <a class="nav-item" href="home.html"><i class="bi bi-house" aria-hidden="true"></i><span class="nav-label">Início</span></a>
+      <a class="nav-item" href="index.html"><i class="bi bi-map" aria-hidden="true"></i><span class="nav-label">Mapa de ocorrências</span></a>
+      <a class="nav-item" href="admin.html" aria-current="page" data-nav-admin hidden><i class="bi bi-shield-lock" aria-hidden="true"></i><span class="nav-label">Painel admin</span></a>
+      <a class="nav-item" href="perfil.html" data-nav-user hidden><i class="bi bi-person-gear" aria-hidden="true"></i><span class="nav-label">Minha conta</span></a>
+    </div>
+
+    <div class="nav-group nav-bottom">
+      <button class="nav-item" type="button" data-theme-toggle aria-label="Mudar para o tema escuro"><i class="bi bi-moon-stars" aria-hidden="true"></i><span class="nav-label" data-theme-label>Tema escuro</span></button>
+      <button class="nav-item nav-collapse" type="button" id="nav-collapse-btn" aria-controls="side-nav" aria-expanded="true" aria-label="Recolher menu"><i class="bi bi-chevron-double-right" aria-hidden="true"></i><span class="nav-label">Recolher menu</span></button>
+    </div>
+
+    <div class="nav-group">
+      <a class="nav-user" id="nav-user" href="perfil.html" data-nav-user hidden>
+        <span class="nav-avatar" id="nav-avatar" aria-hidden="true">?</span>
+        <span class="nav-user-text"><span class="nav-user-name" id="nav-user-name">Minha conta</span><span class="nav-user-role" id="nav-user-role"></span></span>
+      </a>
+      <button class="nav-item nav-danger" type="button" id="nav-logout" data-nav-user hidden><i class="bi bi-box-arrow-right" aria-hidden="true"></i><span class="nav-label">Sair</span></button>
+      <a class="nav-item nav-cta" href="login.html?next=admin.html" data-nav-guest><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i><span class="nav-label">Entrar</span></a>
+    </div>
+  </nav>
+  <div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
 </div>
 
-<script src="../js/api.js"></script>
-<script src="../js/auth.js"></script>
-<script src="../js/sidenav.js"></script>
-<script src="../js/admin.js"></script>
+<script src="../js/api.js?v=2026111705"></script>
+<script src="../js/auth.js?v=2026111705"></script>
+<script src="../js/sidenav.js?v=2026111705"></script>
+<script src="../js/admin.js?v=2026111705"></script>
 </body>
 </html>

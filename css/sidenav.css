@@ -1,6 +1,6 @@
 /* =========================================================
    Menu lateral (mapa e painel admin)
-   Desktop: trilho fixo à esquerda, expande com rótulos ou recolhe só com ícones.
+   Desktop: trilho fixo à direita, expande com rótulos ou recolhe só com ícones.
    Celular/tablet (≤ 900px): gaveta que abre pelo botão ☰ do cabeçalho.
    ========================================================= */
 
@@ -13,7 +13,7 @@
   gap: 4px;
   padding: 12px 10px;
   background: var(--surface);
-  border-right: 1px solid var(--hairline);
+  border-left: 1px solid var(--hairline);
   overflow-y: auto;
   overflow-x: hidden;
   transition: width .2s ease;
@@ -117,12 +117,12 @@
   .side-nav.is-collapsed {
     --nav-w: min(280px, 84vw);
     position: fixed;
-    inset: 0 auto 0 0;
+    inset: 0 0 0 auto;
     z-index: 2000;
     height: 100dvh;
     padding-top: 16px;
     box-shadow: 0 0 40px rgb(0 0 0 / .25);
-    transform: translateX(-105%);
+    transform: translateX(105%);
     visibility: hidden;
     transition: transform .22s ease, visibility 0s linear .22s;
   }

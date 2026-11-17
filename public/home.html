@@ -12,55 +12,20 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Monitoramento Ambiental">
   <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
-  <script src="../js/theme.js"></script>
+  <script src="../js/theme.js?v=2026111705"></script>
   <link rel="preload" href="../fonts/archivo-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://maps.googleapis.com">
   <link rel="preconnect" href="https://maps.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="../css/home.css">
-  <link rel="stylesheet" href="../css/sidenav.css">
+  <link rel="stylesheet" href="../css/home.css?v=2026111705">
+  <link rel="stylesheet" href="../css/sidenav.css?v=2026111705">
 </head>
 <body>
 <!-- deal: nav-centre · footer-statement · close-word · rhythm space · botões arrow · marca dots · hero split
      paleta: verde-água (água limpa, encosta com vegetação) + as três cores de risco do app; Archivo + Inter -->
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
-<div class="home-shell">
-  <nav class="side-nav" id="side-nav" aria-label="Menu principal">
-    <div class="nav-group">
-      <span class="nav-heading">Navegação</span>
-      <a class="nav-item" href="home.html" aria-current="page"><i class="bi bi-house" aria-hidden="true"></i><span class="nav-label">Início</span></a>
-      <a class="nav-item" href="index.html"><i class="bi bi-map" aria-hidden="true"></i><span class="nav-label">Mapa de ocorrências</span></a>
-      <a class="nav-item" href="admin.html" data-nav-admin hidden><i class="bi bi-shield-lock" aria-hidden="true"></i><span class="nav-label">Painel admin</span></a>
-      <a class="nav-item" href="perfil.html" data-nav-user hidden><i class="bi bi-person-gear" aria-hidden="true"></i><span class="nav-label">Minha conta</span></a>
-    </div>
-
-    <div class="nav-group nav-sections">
-      <span class="nav-heading">Nesta página</span>
-      <a class="nav-item" href="#ocorrencias"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i><span class="nav-label">Ocorrências</span></a>
-      <a class="nav-item" href="#como-funciona"><i class="bi bi-list-ol" aria-hidden="true"></i><span class="nav-label">Como funciona</span></a>
-      <a class="nav-item" href="#sobre"><i class="bi bi-info-circle" aria-hidden="true"></i><span class="nav-label">Sobre o projeto</span></a>
-    </div>
-
-    <div class="nav-group nav-bottom">
-      <button class="nav-item" type="button" data-theme-toggle aria-label="Mudar para o tema escuro"><i class="bi bi-moon-stars" aria-hidden="true"></i><span class="nav-label" data-theme-label>Tema escuro</span></button>
-      <button class="nav-item nav-collapse" type="button" id="nav-collapse-btn" aria-controls="side-nav" aria-expanded="true" aria-label="Recolher menu"><i class="bi bi-chevron-double-left" aria-hidden="true"></i><span class="nav-label">Recolher menu</span></button>
-    </div>
-
-    <div class="nav-group">
-      <a class="nav-user" id="nav-user" href="perfil.html" data-nav-user hidden>
-        <span class="nav-avatar" id="nav-avatar" aria-hidden="true">?</span>
-        <span class="nav-user-text"><span class="nav-user-name" id="nav-user-name">Minha conta</span><span class="nav-user-role" id="nav-user-role"></span></span>
-      </a>
-      <button class="nav-item nav-danger" type="button" id="nav-logout" data-nav-user hidden><i class="bi bi-box-arrow-right" aria-hidden="true"></i><span class="nav-label">Sair</span></button>
-      <a class="nav-item" href="register.html" data-nav-guest><i class="bi bi-person-plus" aria-hidden="true"></i><span class="nav-label">Criar conta</span></a>
-      <a class="nav-item nav-cta" href="login.html" data-nav-guest><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i><span class="nav-label">Entrar</span></a>
-    </div>
-  </nav>
-  <div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
-
-<div class="home-page">
 <header class="site-nav">
   <div class="wrap nav-row">
     <a class="brand" href="home.html" aria-label="Monitoramento Ambiental, página inicial">
@@ -77,6 +42,10 @@
     </div>
   </div>
 </header>
+
+<div class="home-shell">
+
+<div class="home-page">
 
 <main id="conteudo">
 
@@ -241,13 +210,46 @@
   </div>
 </footer>
 </div><!-- /home-page -->
+
+  <nav class="side-nav" id="side-nav" aria-label="Menu principal">
+    <div class="nav-group">
+      <span class="nav-heading">Navegação</span>
+      <a class="nav-item" href="home.html" aria-current="page"><i class="bi bi-house" aria-hidden="true"></i><span class="nav-label">Início</span></a>
+      <a class="nav-item" href="index.html"><i class="bi bi-map" aria-hidden="true"></i><span class="nav-label">Mapa de ocorrências</span></a>
+      <a class="nav-item" href="admin.html" data-nav-admin hidden><i class="bi bi-shield-lock" aria-hidden="true"></i><span class="nav-label">Painel admin</span></a>
+      <a class="nav-item" href="perfil.html" data-nav-user hidden><i class="bi bi-person-gear" aria-hidden="true"></i><span class="nav-label">Minha conta</span></a>
+    </div>
+
+    <div class="nav-group nav-sections">
+      <span class="nav-heading">Nesta página</span>
+      <a class="nav-item" href="#ocorrencias"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i><span class="nav-label">Ocorrências</span></a>
+      <a class="nav-item" href="#como-funciona"><i class="bi bi-list-ol" aria-hidden="true"></i><span class="nav-label">Como funciona</span></a>
+      <a class="nav-item" href="#sobre"><i class="bi bi-info-circle" aria-hidden="true"></i><span class="nav-label">Sobre o projeto</span></a>
+    </div>
+
+    <div class="nav-group nav-bottom">
+      <button class="nav-item" type="button" data-theme-toggle aria-label="Mudar para o tema escuro"><i class="bi bi-moon-stars" aria-hidden="true"></i><span class="nav-label" data-theme-label>Tema escuro</span></button>
+      <button class="nav-item nav-collapse" type="button" id="nav-collapse-btn" aria-controls="side-nav" aria-expanded="true" aria-label="Recolher menu"><i class="bi bi-chevron-double-right" aria-hidden="true"></i><span class="nav-label">Recolher menu</span></button>
+    </div>
+
+    <div class="nav-group">
+      <a class="nav-user" id="nav-user" href="perfil.html" data-nav-user hidden>
+        <span class="nav-avatar" id="nav-avatar" aria-hidden="true">?</span>
+        <span class="nav-user-text"><span class="nav-user-name" id="nav-user-name">Minha conta</span><span class="nav-user-role" id="nav-user-role"></span></span>
+      </a>
+      <button class="nav-item nav-danger" type="button" id="nav-logout" data-nav-user hidden><i class="bi bi-box-arrow-right" aria-hidden="true"></i><span class="nav-label">Sair</span></button>
+      <a class="nav-item" href="register.html" data-nav-guest><i class="bi bi-person-plus" aria-hidden="true"></i><span class="nav-label">Criar conta</span></a>
+      <a class="nav-item nav-cta" href="login.html" data-nav-guest><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i><span class="nav-label">Entrar</span></a>
+    </div>
+  </nav>
+  <div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
 </div><!-- /home-shell -->
 
-<script src="../js/config.js"></script>
-<script src="../js/api.js"></script>
-<script src="../js/auth.js"></script>
-<script src="../js/sidenav.js"></script>
-<script src="../js/maps.js"></script>
-<script src="../js/home.js"></script>
+<script src="../js/config.js?v=2026111705"></script>
+<script src="../js/api.js?v=2026111705"></script>
+<script src="../js/auth.js?v=2026111705"></script>
+<script src="../js/sidenav.js?v=2026111705"></script>
+<script src="../js/maps.js?v=2026111705"></script>
+<script src="../js/home.js?v=2026111705"></script>
 </body>
 </html>

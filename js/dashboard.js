@@ -96,6 +96,10 @@ async function loadAlerts() {
   listStatusEl.textContent = 'Carregando ocorrências…';
   try {
     const data = await Api.get('/incidents/' + filterQuery());
+    if (!data || !Array.isArray(data.ocorrencias)) {
+      // servidor sem PHP (ex.: Live Server) devolve outra coisa no lugar do JSON da API
+      throw new Error('A lista precisa do PHP rodando: abra pelo XAMPP, php -S ou pelo site publicado.');
+    }
     alerts.forEach(dropMarker);
     alerts = data.ocorrencias.filter(a => TYPE_CONFIG[a.tipo]);
     alerts.forEach(addMarker);
