@@ -11,24 +11,24 @@
   <meta property="og:description" content="Mapa colaborativo de enchentes, erosões e quedas de talude em São Paulo.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Monitoramento Ambiental">
-  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
-  <script src="../js/theme.js?v=2026111705"></script>
-  <link rel="preload" href="../fonts/archivo-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="../fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <script src="js/theme.js?v=2026111706"></script>
+  <link rel="preload" href="fonts/archivo-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://maps.googleapis.com">
   <link rel="preconnect" href="https://maps.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="../css/home.css?v=2026111705">
-  <link rel="stylesheet" href="../css/sidenav.css?v=2026111705">
+  <link rel="stylesheet" href="css/home.css?v=2026111706">
+  <link rel="stylesheet" href="css/sidenav.css?v=2026111706">
 </head>
-<body>
+<body data-page="home">
 <!-- deal: nav-centre · footer-statement · close-word · rhythm space · botões arrow · marca dots · hero split
      paleta: verde-água (água limpa, encosta com vegetação) + as três cores de risco do app; Archivo + Inter -->
 <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
 <header class="site-nav">
   <div class="wrap nav-row">
-    <a class="brand" href="home.html" aria-label="Monitoramento Ambiental, página inicial">
+    <a class="brand" href="./" aria-label="Monitoramento Ambiental, página inicial">
       <span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
       Monitoramento Ambiental
     </a>
@@ -58,15 +58,15 @@
         <p class="lead enter-3">Marque no mapa o ponto exato onde a água subiu ou a encosta cedeu, escolha o tipo e descreva o que viu. O alerta aparece para todos que acessam a plataforma.</p>
         <p class="fact enter-3"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> O nome da rua é preenchido sozinho pelo Google Maps.</p>
         <div class="hero-actions enter-4">
-          <a class="btn btn-primary" href="index.html">Abrir o mapa <i class="bi bi-arrow-right arrow" aria-hidden="true"></i></a>
-          <a class="btn btn-ghost" href="register.html" data-auth-guest>Criar conta</a>
+          <a class="btn btn-primary" href="mapa">Abrir o mapa <i class="bi bi-arrow-right arrow" aria-hidden="true"></i></a>
+          <a class="btn btn-ghost" href="cadastro" data-auth-guest>Criar conta</a>
         </div>
       </div>
 
       <div class="app-frame enter-5" aria-label="Prévia da tela do mapa" role="img">
         <div class="frame-bar" aria-hidden="true">
           <span></span><span></span><span></span>
-          <b>index.html — Mapa de ocorrências</b>
+          <b>/mapa — Mapa de ocorrências</b>
         </div>
         <div class="frame-body" aria-hidden="true">
           <div class="frame-side">
@@ -163,12 +163,12 @@
         <h2>Feito para a disciplina de Modelos, métodos e técnicas da engenharia de software</h2>
         <p class="sec-lead">O frontend em HTML, CSS e JavaScript fala com uma API REST em PHP, que guarda usuários e ocorrências num banco relacional via PDO. Tem login com sessão, proteção contra CSRF, papéis de usuário e um painel administrativo com usuários e logs.</p>
         <ul class="stack" aria-label="Tecnologias usadas">
-          <li><img src="../img/icons/php.svg" alt="" width="28" height="28">PHP</li>
-          <li><img src="../img/icons/javascript.svg" alt="" width="28" height="28">JavaScript</li>
-          <li><img src="../img/icons/html5.svg" alt="" width="28" height="28">HTML5</li>
-          <li><img src="../img/icons/css3.svg" alt="" width="28" height="28">CSS3</li>
-          <li><img src="../img/icons/googlemaps.svg" alt="" width="28" height="28">Google Maps</li>
-          <li><img src="../img/icons/bootstrap.svg" alt="" width="28" height="28">Bootstrap Icons</li>
+          <li><img src="img/icons/php.svg" alt="" width="28" height="28">PHP</li>
+          <li><img src="img/icons/javascript.svg" alt="" width="28" height="28">JavaScript</li>
+          <li><img src="img/icons/html5.svg" alt="" width="28" height="28">HTML5</li>
+          <li><img src="img/icons/css3.svg" alt="" width="28" height="28">CSS3</li>
+          <li><img src="img/icons/googlemaps.svg" alt="" width="28" height="28">Google Maps</li>
+          <li><img src="img/icons/bootstrap.svg" alt="" width="28" height="28">Bootstrap Icons</li>
         </ul>
       </div>
       <figure class="flow" aria-label="Caminho de uma ocorrência: navegador, API, regras de negócio e banco de dados">
@@ -189,8 +189,8 @@
       <h2 class="close-word">Sinalize.</h2>
       <p class="sec-lead">Abra o mapa, marque o ponto e avise quem passa por ali.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="index.html">Abrir o mapa <i class="bi bi-arrow-right arrow" aria-hidden="true"></i></a>
-        <a class="btn btn-ghost" href="register.html" data-auth-guest>Criar conta</a>
+        <a class="btn btn-primary" href="mapa">Abrir o mapa <i class="bi bi-arrow-right arrow" aria-hidden="true"></i></a>
+        <a class="btn btn-ghost" href="cadastro" data-auth-guest>Criar conta</a>
       </div>
     </div>
   </section>
@@ -201,9 +201,9 @@
     <p class="footer-statement">Monitoramento Ambiental é um mapa colaborativo de alagamentos, erosões e quedas de talude.</p>
     <div class="footer-row">
       <nav aria-label="Rodapé">
-        <a class="link" href="index.html">Mapa</a>
-        <a class="link" href="login.html" data-auth-guest>Entrar</a>
-        <a class="link" href="register.html" data-auth-guest>Criar conta</a>
+        <a class="link" href="mapa">Mapa</a>
+        <a class="link" href="entrar" data-auth-guest>Entrar</a>
+        <a class="link" href="cadastro" data-auth-guest>Criar conta</a>
       </nav>
       <p class="legal">Trabalho acadêmico A3, 2026 · Mapas © <span translate="no">Google</span></p>
     </div>
@@ -214,10 +214,10 @@
   <nav class="side-nav" id="side-nav" aria-label="Menu principal">
     <div class="nav-group">
       <span class="nav-heading">Navegação</span>
-      <a class="nav-item" href="home.html" aria-current="page"><i class="bi bi-house" aria-hidden="true"></i><span class="nav-label">Início</span></a>
-      <a class="nav-item" href="index.html"><i class="bi bi-map" aria-hidden="true"></i><span class="nav-label">Mapa de ocorrências</span></a>
-      <a class="nav-item" href="admin.html" data-nav-admin hidden><i class="bi bi-shield-lock" aria-hidden="true"></i><span class="nav-label">Painel admin</span></a>
-      <a class="nav-item" href="perfil.html" data-nav-user hidden><i class="bi bi-person-gear" aria-hidden="true"></i><span class="nav-label">Minha conta</span></a>
+      <a class="nav-item" href="./" aria-current="page"><i class="bi bi-house" aria-hidden="true"></i><span class="nav-label">Início</span></a>
+      <a class="nav-item" href="mapa"><i class="bi bi-map" aria-hidden="true"></i><span class="nav-label">Mapa de ocorrências</span></a>
+      <a class="nav-item" href="admin" data-nav-admin hidden><i class="bi bi-shield-lock" aria-hidden="true"></i><span class="nav-label">Painel admin</span></a>
+      <a class="nav-item" href="perfil" data-nav-user hidden><i class="bi bi-person-gear" aria-hidden="true"></i><span class="nav-label">Minha conta</span></a>
     </div>
 
     <div class="nav-group nav-sections">
@@ -233,23 +233,23 @@
     </div>
 
     <div class="nav-group">
-      <a class="nav-user" id="nav-user" href="perfil.html" data-nav-user hidden>
+      <a class="nav-user" id="nav-user" href="perfil" data-nav-user hidden>
         <span class="nav-avatar" id="nav-avatar" aria-hidden="true">?</span>
         <span class="nav-user-text"><span class="nav-user-name" id="nav-user-name">Minha conta</span><span class="nav-user-role" id="nav-user-role"></span></span>
       </a>
       <button class="nav-item nav-danger" type="button" id="nav-logout" data-nav-user hidden><i class="bi bi-box-arrow-right" aria-hidden="true"></i><span class="nav-label">Sair</span></button>
-      <a class="nav-item" href="register.html" data-nav-guest><i class="bi bi-person-plus" aria-hidden="true"></i><span class="nav-label">Criar conta</span></a>
-      <a class="nav-item nav-cta" href="login.html" data-nav-guest><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i><span class="nav-label">Entrar</span></a>
+      <a class="nav-item" href="cadastro" data-nav-guest><i class="bi bi-person-plus" aria-hidden="true"></i><span class="nav-label">Criar conta</span></a>
+      <a class="nav-item nav-cta" href="entrar" data-nav-guest><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i><span class="nav-label">Entrar</span></a>
     </div>
   </nav>
   <div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
 </div><!-- /home-shell -->
 
-<script src="../js/config.js?v=2026111705"></script>
-<script src="../js/api.js?v=2026111705"></script>
-<script src="../js/auth.js?v=2026111705"></script>
-<script src="../js/sidenav.js?v=2026111705"></script>
-<script src="../js/maps.js?v=2026111705"></script>
-<script src="../js/home.js?v=2026111705"></script>
+<script src="js/config.js?v=2026111706"></script>
+<script src="js/api.js?v=2026111706"></script>
+<script src="js/auth.js?v=2026111706"></script>
+<script src="js/sidenav.js?v=2026111706"></script>
+<script src="js/maps.js?v=2026111706"></script>
+<script src="js/home.js?v=2026111706"></script>
 </body>
 </html>

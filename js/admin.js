@@ -138,9 +138,9 @@
 
   // Só administradores: sem login vai para a tela de entrar; usuário comum vê o aviso
   Api.me().then(function (u) {
-    if (!u) { location.replace('login.html?next=admin.html'); return; }
+    if (!u) { location.replace('entrar?next=admin'); return; }
     if (u.perfil !== 'ADMINISTRADOR') {
-      blocked('bi-shield-lock', 'Área só para administradores', 'Sua conta não tem permissão para ver o painel.', '<a class="btn btn-primary" href="index.html">Voltar ao mapa</a>');
+      blocked('bi-shield-lock', 'Área só para administradores', 'Sua conta não tem permissão para ver o painel.', '<a class="btn btn-primary" href="mapa">Voltar ao mapa</a>');
       return;
     }
     load();

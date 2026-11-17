@@ -7,15 +7,44 @@ Options -Indexes
     Require all denied
 </FilesMatch>
 
-# Raiz do site: index.php redireciona para public/home.html
+# Raiz do site: se o rewrite abaixo não estiver disponível, index.php entrega a página inicial
 DirectoryIndex index.php
 
-# Páginas pedidas sem o /public (ex.: /login.html) são entregues a partir de public/
+# ==== Endereços limpos ====
+#   /          → public/home.html        /entrar    → public/login.html
+#   /mapa      → public/index.html       /cadastro  → public/register.html
+#   /perfil    → public/perfil.html      /admin     → public/admin.html
+# Endereços antigos (/public/home.html, /login.html…) são redirecionados (301) para os novos.
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^([a-z]+\.html)$ public/$1 [L]
+
+    # BASE = pasta do site ("/" na Discloud, "/a3/" no XAMPP), para os redirecionamentos
+    RewriteCond %{REQUEST_URI}::$1 ^(.*?/)(.*)::\2$
+    RewriteRule ^(.*)$ - [E=BASE:%1]
+
+    # 1) antigos → novos (só no pedido original do navegador, para não entrar em loop)
+    RewriteCond %{THE_REQUEST} \s[^\s?]*/public/?[\s?]
+    RewriteRule ^public/?$ %{ENV:BASE} [R=301,L]
+    RewriteCond %{THE_REQUEST} \.html[\s?]
+    RewriteRule ^(?:public/)?home\.html$ %{ENV:BASE} [R=301,L]
+    RewriteCond %{THE_REQUEST} \.html[\s?]
+    RewriteRule ^(?:public/)?index\.html$ %{ENV:BASE}mapa [R=301,L]
+    RewriteCond %{THE_REQUEST} \.html[\s?]
+    RewriteRule ^(?:public/)?login\.html$ %{ENV:BASE}entrar [R=301,L]
+    RewriteCond %{THE_REQUEST} \.html[\s?]
+    RewriteRule ^(?:public/)?register\.html$ %{ENV:BASE}cadastro [R=301,L]
+    RewriteCond %{THE_REQUEST} \.html[\s?]
+    RewriteRule ^(?:public/)?(perfil|admin)\.html$ %{ENV:BASE}$1 [R=301,L]
+
+    # /mapa/ → /mapa (com a barra no fim, os caminhos relativos da página quebrariam)
+    RewriteRule ^(mapa|entrar|cadastro|perfil|admin)/$ %{ENV:BASE}$1 [R=301,L]
+
+    # 2) novos → arquivo de verdade (interno: o endereço na barra não muda)
+    RewriteRule ^$ public/home.html [L]
+    RewriteRule ^mapa$ public/index.html [L]
+    RewriteRule ^entrar$ public/login.html [L]
+    RewriteRule ^cadastro$ public/register.html [L]
+    RewriteRule ^(perfil|admin)$ public/$1.html [L]
 </IfModule>
 
 <IfModule mod_headers.c>

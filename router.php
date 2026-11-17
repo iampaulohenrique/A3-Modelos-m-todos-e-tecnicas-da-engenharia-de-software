@@ -22,10 +22,20 @@ require_once __DIR__ . '/src/env.php';
 require __DIR__ . '/security-headers.php';
 enviarCabecalhosSeguranca($caminho);
 
-if ($caminho === '/' || $caminho === '') {
-    header('Location: /public/home.html', true, 302);
+// Endereços limpos (mesmas regras do .htaccess)
+$limpos = ['/' => 'home', '/mapa' => 'index', '/entrar' => 'login', '/cadastro' => 'register', '/perfil' => 'perfil', '/admin' => 'admin'];
+$antigos = array_flip($limpos);
+if (preg_match('#^(?:/public)?/(home|index|login|register|perfil|admin)\.html$#', $caminho, $m) || preg_match('#^/public/?$#', $caminho)) {
+    $destino = $antigos[$m[1] ?? 'home'];
+    $query = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_QUERY);
+    header('Location: ' . $destino . ($query ? '?' . $query : ''), true, 301);
     return true;
 }
+if (isset($limpos[$caminho])) {
+    $caminho = '/public/' . $limpos[$caminho] . '.html';
+    enviarCabecalhosSeguranca($caminho);   // CSP do Google Maps para mapa e página inicial
+}
+
 // Arquivos estáticos: o próprio roteador entrega, para os cabeçalhos acima valerem
 // (quando o roteador devolve false, o servidor embutido descarta os cabeçalhos).
 $arquivo = realpath(__DIR__ . $caminho);

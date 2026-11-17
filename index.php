@@ -1,5 +1,6 @@
 <?php
-// Raiz do site (Apache): leva para a página inicial.
-// Endereço relativo: funciona no domínio (https://site/) e em subpasta (http://localhost/a3/).
-header('Location: public/home.html', true, 302);
-exit;
+// Raiz do site no Apache. Normalmente o .htaccess já entrega a página inicial em "/";
+// este arquivo só é usado se o mod_rewrite estiver desligado. Entrega a página (sem redirecionar,
+// para não criar loop com o redirecionamento /public/home.html → /).
+header('Content-Type: text/html; charset=utf-8');
+readfile(__DIR__ . '/public/home.html');

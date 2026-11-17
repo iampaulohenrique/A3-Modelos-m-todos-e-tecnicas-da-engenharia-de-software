@@ -136,8 +136,8 @@
       fill(d.usuario);
       Api.me(true);
       var next = new URLSearchParams(location.search).get('next') || '';
-      if (d.usuario.perfilCompleto && /^[a-z]+\.html$/.test(next)) {
-        location.href = next;
+      if (d.usuario.perfilCompleto && Api.paginaSegura(next, '')) {
+        location.href = Api.paginaSegura(next, '');
         return;
       }
       statusBox.focus && statusBox.setAttribute('tabindex', '-1');
@@ -159,7 +159,7 @@
       statusBox.textContent = 'Conta criada. Agora complete CPF e endereço para poder registrar alertas.';
     }
   }).catch(function (err) {
-    if (err.status === 401) location.replace('login.html?next=perfil.html');
+    if (err.status === 401) location.replace('entrar?next=perfil');
     else { alertBox.textContent = err.message; alertBox.className = 'alert-message error'; }
   });
 })();

@@ -382,10 +382,10 @@ function applyAuthState() {
   [tipoSelect, localInput, comentarioInput].forEach(el => { el.disabled = !ok; });
   if (!user) {
     addBtn.disabled = true;
-    hintEl.innerHTML = '<i class="bi bi-person-lock" aria-hidden="true"></i><span><a class="link" href="login.html?next=index.html">Entre na sua conta</a> para registrar uma ocorrência. Ver e filtrar o mapa não precisa de login.</span>';
+    hintEl.innerHTML = '<i class="bi bi-person-lock" aria-hidden="true"></i><span><a class="link" href="entrar?next=mapa">Entre na sua conta</a> para registrar uma ocorrência. Ver e filtrar o mapa não precisa de login.</span>';
   } else if (!user.perfilCompleto) {
     addBtn.disabled = true;
-    hintEl.innerHTML = '<i class="bi bi-person-vcard" aria-hidden="true"></i><span>Para evitar alertas falsos, só contas validadas registram ocorrências. <a class="link" href="perfil.html?next=index.html">Complete seu CPF e endereço</a>.</span>';
+    hintEl.innerHTML = '<i class="bi bi-person-vcard" aria-hidden="true"></i><span>Para evitar alertas falsos, só contas validadas registram ocorrências. <a class="link" href="perfil?next=mapa">Complete seu CPF e endereço</a>.</span>';
   }
 }
 

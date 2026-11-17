@@ -1,11 +1,12 @@
 // =========================================================
 // Comunicação com a API em PHP.
-// - caminhos relativos (../api/...), então funciona em http://localhost/a3/public/ (XAMPP)
+// - caminhos relativos (api/...): as páginas ficam na raiz do site (/, /mapa, /entrar…),
+//   então funciona no domínio e em subpasta (http://localhost/a3/ no XAMPP)
 //   e em http://localhost:8000/public/ (php -S)
 // - guarda o token CSRF em memória e o envia em todo POST, PUT e DELETE
 // =========================================================
 (function () {
-  var BASE = '../api';
+  var BASE = 'api';
   var csrf = null;
   var mePromise = null;
 
@@ -49,7 +50,16 @@
     return data;
   }
 
+  // Páginas do site com endereço limpo. Usado para validar o ?next= (sem redirecionamento aberto).
+  var PAGINAS = { './': 1, mapa: 1, admin: 1, perfil: 1 };
+  var ANTIGAS = { 'home.html': './', 'index.html': 'mapa', 'admin.html': 'admin', 'perfil.html': 'perfil' };
+  function paginaSegura(next, padrao) {
+    next = ANTIGAS[next] || next;
+    return PAGINAS[next] ? next : padrao;
+  }
+
   window.Api = {
+    paginaSegura: paginaSegura,
     Error: ApiError,
     get: function (p) { return request('GET', p); },
     post: function (p, b) { return request('POST', p, b || {}); },

@@ -10,10 +10,10 @@
     });
   }
 
-  // Para onde ir depois de entrar: ?next=admin.html ou o mapa
+  // Para onde ir depois de entrar: ?next=admin ou o mapa
   function destino() {
     var next = new URLSearchParams(location.search).get('next') || '';
-    return /^[a-z]+\.html$/.test(next) ? next : 'index.html';   // só páginas do próprio site (sem redirecionamento aberto)
+    return Api.paginaSegura(next, 'mapa');   // só páginas do próprio site (sem redirecionamento aberto)
   }
 
   function showAlert(box, msg, kind) {
@@ -73,7 +73,7 @@
 
   // depois do cadastro, a pessoa completa CPF e endereço (exigidos pelo banco para criar alertas)
   var regForm = document.getElementById('register-form');
-  if (regForm) regForm.dataset.next = 'perfil.html?next=index.html&novo=1';
+  if (regForm) regForm.dataset.next = 'perfil?next=mapa&novo=1';
 
   wireForm(document.getElementById('register-form'), function (f) {
     return Api.register({
@@ -91,7 +91,7 @@
 
   async function sair() {
     try { await Api.logout(); } catch (e) { /* sessão já encerrada */ }
-    location.href = /home\.html$/.test(location.pathname) ? 'home.html' : 'index.html';
+    location.href = document.body.dataset.page === 'home' ? './' : 'mapa';
   }
 
   // Links só para quem não entrou (Criar conta, Entrar no rodapé) e o "Entrar" do menu do celular
@@ -115,10 +115,10 @@
       if (!u) return;
       var primeiro = esc(String(u.nome).split(' ')[0]);
       slot.innerHTML =
-        '<a class="user-chip" href="perfil.html" title="Minha conta (' + esc(u.email) + ')"><i class="bi bi-person-circle" aria-hidden="true"></i><span class="user-name">' + primeiro + '</span>' +
+        '<a class="user-chip" href="perfil" title="Minha conta (' + esc(u.email) + ')"><i class="bi bi-person-circle" aria-hidden="true"></i><span class="user-name">' + primeiro + '</span>' +
         (u.perfil === 'ADMINISTRADOR' && !slot.hasAttribute('data-compact') ? '<span class="tag tag-admin-mini">admin</span>' : '') + '</a>' +
-        (u.perfil === 'ADMINISTRADOR' && !slot.hasAttribute('data-compact') && !/admin\.html$/.test(location.pathname)
-          ? '<a class="btn btn-ghost" href="admin.html"><i class="bi bi-shield-lock" aria-hidden="true"></i> <span class="btn-text">Painel admin</span></a>' : '') +
+        (u.perfil === 'ADMINISTRADOR' && !slot.hasAttribute('data-compact') && document.body.dataset.page !== 'admin'
+          ? '<a class="btn btn-ghost" href="admin"><i class="bi bi-shield-lock" aria-hidden="true"></i> <span class="btn-text">Painel admin</span></a>' : '') +
         '<button type="button" class="btn btn-ghost" id="logout-btn"><i class="bi bi-box-arrow-right" aria-hidden="true"></i> <span class="btn-text">Sair</span></button>';
       document.getElementById('logout-btn').addEventListener('click', sair);
     });

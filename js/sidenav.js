@@ -93,7 +93,7 @@
 
   async function sair() {
     try { await Api.logout(); } catch (e) { /* sessão já encerrada */ }
-    location.href = /home\.html$/.test(location.pathname) ? 'home.html' : 'index.html';
+    location.href = document.body.dataset.page === 'home' ? './' : 'mapa';
   }
 
   var visitante = nav.querySelectorAll('[data-nav-guest]');
