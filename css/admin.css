@@ -1,7 +1,19 @@
-@import url('dashboard.css'); /* Herda sidebar e layout */
+@import url("dashboard.css"); /* herda cabeçalho, barra lateral e layout */
+
+.tag-admin { background: color-mix(in srgb, var(--talude) 12%, transparent); color: var(--talude); }
+
+.panel-actions { border-top: 1px solid var(--hairline); padding-top: 20px; display: grid; gap: 10px; }
+.panel-actions h2 { margin-bottom: 4px; }
+.panel-actions .help { font-size: .8rem; color: var(--ink-mute); }
+
+.btn-danger { background: var(--talude); color: #fff; }
+.btn-danger:hover { background: color-mix(in srgb, var(--talude) 85%, #000); }
+:root[data-theme="dark"] .btn-danger { color: #2a0605; }
+.btn-sm { min-height: 44px; padding: 6px 12px; font-size: .85rem; }
 
 .admin-main {
   flex: 1;
+  min-width: 0;
   padding: 24px;
   overflow-y: auto;
   display: flex;
@@ -9,124 +21,100 @@
   gap: 24px;
 }
 
+/* indicadores */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
 }
-
 .kpi-card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-md);
+  padding: 18px 20px;
 }
-
 .kpi-title {
-  font-size: 0.78rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: .85rem; font-weight: 600;
+  color: var(--ink-mute);
 }
-
+.kpi-card[class*="t-"] .kpi-title i { color: var(--type); }
 .kpi-value {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--text);
-  margin-top: 6px;
+  margin-top: 8px;
+  font: 800 2.25rem/1 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
 }
+.kpi-card[class*="t-"] .kpi-value { color: var(--type); }
 
+/* tabelas */
 .table-container {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-md);
   overflow: hidden;
 }
-
 .table-header {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--hairline);
 }
+.table-header h2 { font-size: 1.05rem; font-weight: 700; }
+.source { font: 500 .8rem var(--font-mono); color: var(--ink-mute); }
+.table-scroll { overflow-x: auto; position: relative; }
 
-.table-header h2 {
-  font-size: 0.95rem;
-  color: var(--accent);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 0.85rem;
-}
-
-th, td {
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--border);
-}
-
-th {
-  background: var(--panel-2);
-  color: var(--muted);
-  font-weight: 600;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-}
-
+table { width: 100%; border-collapse: collapse; text-align: left; font-size: .9rem; }
+th, td { padding: 12px 20px; border-bottom: 1px solid var(--hairline); white-space: nowrap; }
+th { background: var(--surface-2); color: var(--ink-mute); font-size: .8rem; font-weight: 600; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+td.mono { font-family: var(--font-mono); color: var(--ink-mute); }
+td.row-actions { text-align: right; }
 tr:last-child td { border-bottom: none; }
-tr:hover td { background: rgba(255, 255, 255, 0.02); }
+tbody tr:hover td { background: color-mix(in srgb, var(--surface-2) 50%, transparent); }
 
 .badge-role {
-  font-size: 0.7rem;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: 600;
+  display: inline-block;
+  font-size: .75rem; font-weight: 700;
+  padding: 2px 9px;
+  border-radius: var(--r-pill);
 }
+.role-admin { background: color-mix(in srgb, var(--talude) 12%, transparent); color: var(--talude); }
+.role-user { background: color-mix(in srgb, var(--alagamento) 12%, transparent); color: var(--alagamento); }
 
-.role-admin {
-  background: rgba(239, 68, 68, 0.15);
-  color: var(--talude);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-.role-user {
-  background: rgba(56, 189, 248, 0.15);
-  color: var(--alagamento);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-}
-
-/* CONSOLE LOG TERMINAL */
+/* terminal de logs: sempre escuro, nos dois temas */
 .log-terminal {
-  background: #070a10;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-family: 'Consolas', 'Courier New', monospace;
-  font-size: 0.8rem;
-  padding: 16px;
-  max-height: 250px;
+  background: #0a0f0d;
+  color: #d5ddd8;
+  font: .85rem/1.5 var(--font-mono);
+  padding: 16px 20px;
+  max-height: 280px;
   overflow-y: auto;
 }
+.log-line { display: flex; gap: 12px; margin-bottom: 6px; }
+.log-line .msg { overflow-wrap: anywhere; }
+.log-line .timestamp { color: #8a978f; white-space: nowrap; }
+.log-line .level-INFO { color: #3cc9b5; }
+.log-line .level-WARN { color: #f0a63a; }
+.log-line .level-ERROR { color: #f2706b; }
+.log-line [class^="level-"] { min-width: 44px; font-weight: 700; }
 
-.log-line {
-  margin-bottom: 6px;
-  line-height: 1.4;
-  display: flex;
-  gap: 12px;
+@media (max-width: 900px) {
+  body.app .layout { flex-direction: column; }
+  .admin-main { overflow: visible; padding: 20px 16px; order: -1; }
+  .log-line { flex-wrap: wrap; gap: 4px 10px; }
+}
+@media (max-width: 560px) {
+  .app-header .btn-ghost { padding: 10px 12px; }
+  .app-header .btn-ghost .btn-text { display: none; }
+  .admin-main { width: 100%; }
 }
 
-.log-line .timestamp { color: var(--muted); }
-.log-line .level-INFO { color: var(--accent); }
-.log-line .level-WARN { color: var(--erosao); }
-.log-line .level-ERROR { color: var(--talude); }
-.log-line .msg { color: var(--text); }
+.table-msg { color: var(--ink-mute); text-align: center; white-space: normal; }
+.admin-blocked {
+  margin: auto; max-width: 420px; text-align: center; display: grid; gap: 12px; justify-items: center;
+}
+.admin-blocked i { font-size: 2rem; color: var(--talude); }
+.log-line .who { color: #c3cfc8; }
+
+.role-ok { background: color-mix(in srgb, var(--ok) 12%, transparent); color: var(--ok); margin-left: 6px; }
+.role-pend { background: var(--surface-2); color: var(--ink-mute); margin-left: 6px; }

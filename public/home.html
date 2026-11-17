@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-type="software" data-radius="soft">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Monitoramento Ambiental — mapa colaborativo de enchentes, erosões e quedas de talude</title>
+  <meta name="description" content="Marque no mapa onde a água subiu ou a encosta cedeu. Alagamentos, erosões e quedas de talude em São Paulo, sinalizados pela população.">
+  <meta name="page-type" content="software">
+  <meta name="theme-color" content="#f5f6f2">
+  <meta property="og:title" content="Monitoramento Ambiental">
+  <meta property="og:description" content="Mapa colaborativo de enchentes, erosões e quedas de talude em São Paulo.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Monitoramento Ambiental">
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+  <script src="../js/theme.js"></script>
+  <link rel="preload" href="../fonts/archivo-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preconnect" href="https://maps.googleapis.com">
+  <link rel="preconnect" href="https://maps.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../css/home.css">
+</head>
+<body>
+<!-- deal: nav-centre · footer-statement · close-word · rhythm space · botões arrow · marca dots · hero split
+     paleta: verde-água (água limpa, encosta com vegetação) + as três cores de risco do app; Archivo + Inter -->
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+<header class="site-nav">
+  <div class="wrap nav-row">
+    <a class="brand" href="home.html" aria-label="Monitoramento Ambiental, página inicial">
+      <span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      Monitoramento Ambiental
+    </a>
+    <nav class="nav-centre" aria-label="Seções">
+      <a class="nav-link" href="#ocorrencias">Ocorrências</a>
+      <a class="nav-link" href="#como-funciona">Como funciona</a>
+      <a class="nav-link" href="#sobre">Sobre o projeto</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" type="button" data-theme-toggle aria-label="Mudar para o tema escuro"><i class="bi bi-moon-stars" aria-hidden="true"></i></button>
+      <!-- js/auth.js troca por nome + Sair quando há login -->
+      <span id="auth-slot" class="auth-slot nav-desktop" data-compact><a class="nav-link" href="login.html">Entrar</a></span>
+      <a class="btn btn-primary nav-desktop" href="index.html">Abrir o mapa <i class="bi bi-arrow-right arrow" aria-hidden="true"></i></a>
+      <button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="menu-mobile" aria-label="Abrir menu"><i class="bi bi-list" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <div class="menu-mobile" id="menu-mobile" hidden>
+    <nav aria-label="Menu">
+      <a href="#ocorrencias">Ocorrências</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#sobre">Sobre o projeto</a>
+      <a href="login.html" data-auth-login>Entrar</a>
+    </nav>
+    <a class="btn btn-primary btn-block" href="index.html">Abrir o mapa <i class="bi bi-arrow-right arrow" aria-hidden="true"></i></a>
+  </div>
+</header>
+
+<main id="conteudo">
+
+  <!-- 1. HERO -->
+  <section class="hero" id="inicio" data-enter style="--h:1">
+    <div class="wrap hero-grid">
+      <div class="hero-text">
+        <span class="tag enter-1">Trabalho A3 · Engenharia de Software</span>
+        <h1 class="enter-2">Mapa colaborativo de enchentes, erosões e quedas de talude em São&nbsp;Paulo</h1>
+        <p class="lead enter-3">Marque no mapa o ponto exato onde a água subiu ou a encosta cedeu, escolha o tipo e descreva o que viu. O alerta aparece para todos que acessam a plataforma.</p>
+        <p class="fact enter-3"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> O nome da rua é preenchido sozinho pelo Google Maps.</p>
+        <div class="hero-actions enter-4">
+          <a class="btn btn-primary" href="index.html">Abrir o mapa <i class="bi bi-arrow-right arrow" aria-hidden="true"></i></a>
+          <a class="btn btn-ghost" href="register.html" data-auth-guest>Criar conta</a>
+        </div>
+      </div>
+
+      <div class="app-frame enter-5" aria-label="Prévia da tela do mapa" role="img">
+        <div class="frame-bar" aria-hidden="true">
+          <span></span><span></span><span></span>
+          <b>index.html — Mapa de ocorrências</b>
+        </div>
+        <div class="frame-body" aria-hidden="true">
+          <div class="frame-side">
+            <p class="frame-h">Novo alerta</p>
+            <div class="mock-field"><small>Tipo de ocorrência</small><div class="mock-input"><span class="dot t-talude"></span>Queda de talude<i class="bi bi-chevron-down"></i></div></div>
+            <div class="mock-field"><small>Rodovia ou rua</small><div class="mock-input">Rodovia Anchieta, km 12</div></div>
+            <div class="mock-btn">Adicionar alerta</div>
+            <p class="frame-h frame-h2">Alertas ativos</p>
+            <div class="mock-item t-alagamento"><b>Alagamento</b><span>Av. do Estado, Cambuci</span></div>
+            <div class="mock-item t-erosao"><b>Erosão</b><span>Estrada do M’Boi Mirim</span></div>
+          </div>
+          <div class="frame-map map-fallback" id="hero-map" data-map></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. OCORRÊNCIAS -->
+  <section class="sec sec-center" id="ocorrencias" style="--h:1">
+    <div class="wrap">
+      <h2>O que pode ser sinalizado</h2>
+      <p class="sec-lead">Cada tipo tem uma cor no mapa e na lista de alertas, para que a situação de uma região fique clara de longe.</p>
+      <div class="types">
+        <article class="type-card t-alagamento">
+          <div class="frag" aria-hidden="true">
+            <div class="frag-top"><span class="dot t-alagamento"></span><b>Alagamento</b><time>14:32</time></div>
+            <p>Av. do Estado, Cambuci</p>
+            <small>Água na altura da guia, faixa da direita fechada.</small>
+          </div>
+          <h3><i class="bi bi-water" aria-hidden="true"></i> Alagamento e enchente</h3>
+          <p>Rua ou avenida com água acumulada, bueiro transbordando, córrego fora do leito.</p>
+        </article>
+        <article class="type-card t-erosao">
+          <div class="frag" aria-hidden="true">
+            <div class="frag-top"><span class="dot t-erosao"></span><b>Erosão</b><time>09:10</time></div>
+            <p>Estrada do M’Boi Mirim, Jardim Ângela</p>
+            <small>Buraco aumentando na beira da calçada depois da chuva.</small>
+          </div>
+          <h3><i class="bi bi-cone-striped" aria-hidden="true"></i> Erosão</h3>
+          <p>Solo levado pela chuva, buracos que crescem na beira da calçada, margem de córrego cedendo.</p>
+        </article>
+        <article class="type-card t-talude">
+          <div class="frag" aria-hidden="true">
+            <div class="frag-top"><span class="dot t-talude"></span><b>Queda de talude</b><time>17:48</time></div>
+            <p>Rodovia Anchieta, km 12</p>
+            <small>Terra sobre o acostamento, sentido litoral.</small>
+          </div>
+          <h3><i class="bi bi-exclamation-octagon" aria-hidden="true"></i> Queda de talude</h3>
+          <p>Barranco ou encosta que desabou ou mostra trincas, árvores inclinadas, terra sobre a via.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. COMO FUNCIONA (momento: o passo a passo acompanha a rolagem) -->
+  <section class="sec steps-sec" id="como-funciona" style="--h:2">
+    <div class="steps-sticky">
+      <div class="wrap steps-grid">
+        <div class="steps-text">
+          <h2>Como sinalizar uma ocorrência</h2>
+          <ol class="steps" id="steps">
+            <li class="is-active" data-step="1">
+              <span class="num">1</span>
+              <div><h3>Clique no ponto do mapa</h3><p>Aproxime até a rua e clique onde está o problema. Um marcador temporário mostra o ponto escolhido.</p></div>
+            </li>
+            <li data-step="2">
+              <span class="num">2</span>
+              <div><h3>Confira o endereço</h3><p>O sistema busca o nome da via no Google Maps e preenche o campo. Dá para corrigir à mão.</p></div>
+            </li>
+            <li data-step="3">
+              <span class="num">3</span>
+              <div><h3>Publique o alerta</h3><p>Escolha o tipo, escreva um comentário curto e adicione. O ponto ganha a cor do tipo para todos.</p></div>
+            </li>
+          </ol>
+        </div>
+        <div class="steps-visual step-1" id="steps-visual" aria-hidden="true">
+          <div class="sv-map map-fallback" id="steps-map" data-map></div>
+          <div class="sv-pick"></div>
+          <div class="sv-pin t-talude"></div>
+          <div class="sv-card">
+            <div class="sv-row sv-looking"><i class="bi bi-arrow-repeat"></i> Buscando endereço…</div>
+            <div class="sv-row sv-found"><i class="bi bi-geo-alt-fill"></i> Rodovia Anchieta, km 12</div>
+            <div class="sv-row sv-done"><span class="dot t-talude"></span><b>Queda de talude</b> adicionada</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. SOBRE O PROJETO -->
+  <section class="sec sec-center" id="sobre" style="--h:1">
+    <div class="wrap about-grid">
+      <div>
+        <h2>Feito para a disciplina de Modelos, métodos e técnicas da engenharia de software</h2>
+        <p class="sec-lead">O frontend em HTML, CSS e JavaScript fala com uma API REST em PHP, que guarda usuários e ocorrências num banco relacional via PDO. Tem login com sessão, proteção contra CSRF, papéis de usuário e um painel administrativo com usuários e logs.</p>
+        <ul class="stack" aria-label="Tecnologias usadas">
+          <li><img src="../img/icons/php.svg" alt="" width="28" height="28">PHP</li>
+          <li><img src="../img/icons/javascript.svg" alt="" width="28" height="28">JavaScript</li>
+          <li><img src="../img/icons/html5.svg" alt="" width="28" height="28">HTML5</li>
+          <li><img src="../img/icons/css3.svg" alt="" width="28" height="28">CSS3</li>
+          <li><img src="../img/icons/googlemaps.svg" alt="" width="28" height="28">Google Maps</li>
+          <li><img src="../img/icons/bootstrap.svg" alt="" width="28" height="28">Bootstrap Icons</li>
+        </ul>
+      </div>
+      <figure class="flow" aria-label="Caminho de uma ocorrência: navegador, API, regras de negócio e banco de dados">
+        <div class="flow-node"><i class="bi bi-window" aria-hidden="true"></i><b>public/</b><span>Mapa e formulários</span></div>
+        <div class="flow-line" aria-hidden="true"><i></i></div>
+        <div class="flow-node"><i class="bi bi-arrow-left-right" aria-hidden="true"></i><b>api/</b><span>Endpoints em JSON</span></div>
+        <div class="flow-line" aria-hidden="true"><i></i></div>
+        <div class="flow-node"><i class="bi bi-diagram-3" aria-hidden="true"></i><b>src/</b><span>Auth e Occurrence</span></div>
+        <div class="flow-line" aria-hidden="true"><i></i></div>
+        <div class="flow-node"><i class="bi bi-database" aria-hidden="true"></i><b>database/</b><span>schema.sql</span></div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 5. FECHAMENTO -->
+  <section class="sec close" id="sinalize" style="--h:1">
+    <div class="wrap close-inner">
+      <h2 class="close-word">Sinalize.</h2>
+      <p class="sec-lead">Abra o mapa, marque o ponto e avise quem passa por ali.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="index.html">Abrir o mapa <i class="bi bi-arrow-right arrow" aria-hidden="true"></i></a>
+        <a class="btn btn-ghost" href="register.html" data-auth-guest>Criar conta</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="footer-statement">Monitoramento Ambiental é um mapa colaborativo de alagamentos, erosões e quedas de talude.</p>
+    <div class="footer-row">
+      <nav aria-label="Rodapé">
+        <a class="link" href="index.html">Mapa</a>
+        <a class="link" href="login.html" data-auth-guest>Entrar</a>
+        <a class="link" href="register.html" data-auth-guest>Criar conta</a>
+      </nav>
+      <p class="legal">Trabalho acadêmico A3, 2026 · Mapas © <span translate="no">Google</span></p>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/maps.js"></script>
+<script src="../js/home.js"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-type="software">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Minha conta — Monitoramento Ambiental</title>
+  <meta name="description" content="Complete CPF e endereço para registrar alertas no mapa.">
+  <meta name="theme-color" content="#f5f6f2">
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+  <script src="../js/theme.js"></script>
+  <link rel="preload" href="../fonts/archivo-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body class="auth">
+<a class="skip-link" href="#conteudo">Pular para o formulário</a>
+
+<aside class="auth-aside" aria-label="Sobre a plataforma">
+  <a class="brand" href="home.html" aria-label="Monitoramento Ambiental, página inicial">
+    <span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    Monitoramento Ambiental
+  </a>
+  <div>
+    <p class="statement">Contas validadas deixam o mapa confiável.</p>
+    <p class="sub">Para evitar alertas falsos, só contas com nome, CPF e endereço completos podem registrar ocorrências.</p>
+    <ul class="type-list">
+      <li class="t-alagamento"><i class="bi bi-water" aria-hidden="true"></i>Alagamento e enchente</li>
+      <li class="t-erosao"><i class="bi bi-cone-striped" aria-hidden="true"></i>Erosão</li>
+      <li class="t-talude"><i class="bi bi-exclamation-octagon" aria-hidden="true"></i>Queda de talude</li>
+    </ul>
+  </div>
+  <p class="aside-foot">Trabalho acadêmico A3 · Mapas © <span translate="no">Google</span></p>
+</aside>
+
+<div class="auth-main">
+  <div class="auth-top">
+    <!-- voltar ao mapa -->
+    <a href="index.html" class="back-link"><i class="bi bi-arrow-left" aria-hidden="true"></i> Voltar ao mapa</a>
+    <button class="icon-btn" type="button" data-theme-toggle aria-label="Mudar para o tema escuro"><i class="bi bi-moon-stars" aria-hidden="true"></i></button>
+  </div>
+
+  <main class="auth-container auth-wide" id="conteudo">
+    <div class="auth-header">
+      <h1>Minha conta</h1>
+      <p id="perfil-email">Carregando…</p>
+    </div>
+
+    <div id="perfil-status" class="alert-message" role="status" aria-live="polite"></div>
+
+    <div class="auth-card">
+      <div id="auth-alert" class="alert-message" role="alert" aria-live="polite"></div>
+
+      <form id="perfil-form" novalidate>
+        <div class="field">
+          <label for="nome">Nome completo</label>
+          <input class="input" type="text" id="nome" name="nome" required autocomplete="name" maxlength="120" aria-describedby="nome-error">
+          <p class="error" id="nome-error"></p>
+        </div>
+
+        <div class="field">
+          <label for="cpf">CPF</label>
+          <input class="input" type="text" id="cpf" name="cpf" required inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="14" placeholder="000.000.000-00" aria-describedby="cpf-help cpf-error">
+          <p class="help" id="cpf-help">Usado só para impedir contas falsas. Não aparece para ninguém e não pode ser trocado depois.</p>
+          <p class="error" id="cpf-error"></p>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="cep">CEP</label>
+            <input class="input" type="text" id="cep" name="cep" required inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="00000-000" aria-describedby="cep-help cep-error">
+            <p class="help" id="cep-help" aria-live="polite">A rua é preenchida pelo CEP.</p>
+            <p class="error" id="cep-error"></p>
+          </div>
+          <div class="field">
+            <label for="uf">Estado</label>
+            <select class="input" id="uf" name="uf" required autocomplete="address-level1" aria-describedby="uf-error">
+            <option value="">Escolha…</option>
+            <option value="AC">AC</option>
+            <option value="AL">AL</option>
+            <option value="AP">AP</option>
+            <option value="AM">AM</option>
+            <option value="BA">BA</option>
+            <option value="CE">CE</option>
+            <option value="DF">DF</option>
+            <option value="ES">ES</option>
+            <option value="GO">GO</option>
+            <option value="MA">MA</option>
+            <option value="MT">MT</option>
+            <option value="MS">MS</option>
+            <option value="MG">MG</option>
+            <option value="PA">PA</option>
+            <option value="PB">PB</option>
+            <option value="PR">PR</option>
+            <option value="PE">PE</option>
+            <option value="PI">PI</option>
+            <option value="RJ">RJ</option>
+            <option value="RN">RN</option>
+            <option value="RS">RS</option>
+            <option value="RO">RO</option>
+            <option value="RR">RR</option>
+            <option value="SC">SC</option>
+            <option value="SP">SP</option>
+            <option value="SE">SE</option>
+            <option value="TO">TO</option>
+            </select>
+            <p class="error" id="uf-error"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="logradouro">Rua</label>
+          <input class="input" type="text" id="logradouro" name="logradouro" required autocomplete="address-line1" maxlength="150" aria-describedby="logradouro-error">
+          <p class="error" id="logradouro-error"></p>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="numero">Número</label>
+            <input class="input" type="text" id="numero" name="numero" required autocomplete="off" maxlength="10" placeholder="Ex.: 120 ou s/n" aria-describedby="numero-error">
+            <p class="error" id="numero-error"></p>
+          </div>
+          <div class="field">
+            <label for="complemento">Complemento <span class="optional">(opcional)</span></label>
+            <input class="input" type="text" id="complemento" name="complemento" autocomplete="address-line2" maxlength="60" aria-describedby="complemento-error">
+            <p class="error" id="complemento-error"></p>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="bairro">Bairro</label>
+            <input class="input" type="text" id="bairro" name="bairro" required autocomplete="off" maxlength="80" aria-describedby="bairro-error">
+            <p class="error" id="bairro-error"></p>
+          </div>
+          <div class="field">
+            <label for="cidade">Cidade</label>
+            <input class="input" type="text" id="cidade" name="cidade" required autocomplete="address-level2" maxlength="80" aria-describedby="cidade-error">
+            <p class="error" id="cidade-error"></p>
+          </div>
+        </div>
+
+        <button type="submit" id="submit-btn" class="btn btn-primary btn-block">
+          <span class="btn-label">Salvar cadastro</span> <i class="bi bi-check2 arrow" aria-hidden="true"></i>
+        </button>
+      </form>
+    </div>
+
+    <p class="auth-footer"><a class="link" href="index.html">Voltar ao mapa</a></p>
+  </main>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/perfil.js"></script>
+</body>
+</html>
