@@ -1,466 +1,178 @@
 # Sistema de Monitoramento e Sinalização de Ocorrências Ambientais
 
+> Trabalho acadêmico da A3 de **Modelos, Métodos e Técnicas da Engenharia de Software**.
+> **No ar:** https://moniambiental.discloud.app
+
 ## Sobre o projeto
 
-Este projeto foi desenvolvido como trabalho acadêmico com foco na **área ambiental e na participação da população na identificação de problemas urbanos**.
+A aplicação permite que a população registre e visualize ocorrências ambientais diretamente em um **mapa interativo**. Ao identificar uma situação de risco em uma rua ou região, o usuário marca o local no mapa e sinaliza a ocorrência para que todos tenham conhecimento.
 
-A aplicação permite que usuários registrem e visualizem ocorrências ambientais diretamente em um **mapa interativo**. Ao identificar uma situação de risco ou problema em determinada rua ou região, o usuário pode selecionar o local no mapa e sinalizar a ocorrência para que outros usuários da plataforma tenham conhecimento.
+Tipos de ocorrência monitorados:
 
-Os principais tipos de ocorrências monitorados pelo sistema são:
-
-- 🌊 **Enchentes**
+- 🌊 **Alagamento / enchente**
 - 🏔️ **Erosão**
 - ⚠️ **Queda de talude**
 
-O objetivo é criar uma plataforma colaborativa que facilite a **identificação, visualização e compartilhamento de informações sobre problemas ambientais nas cidades**, contribuindo para uma maior conscientização da população sobre situações que podem causar riscos e impactos à comunidade.
+O objetivo é criar uma plataforma colaborativa que facilite a **identificação, visualização e compartilhamento de informações sobre problemas ambientais nas cidades**, aumentando a conscientização sobre situações que causam riscos à comunidade.
+
+Para evitar **alertas falsos**, só contas autenticadas e **validadas** (nome, CPF válido e endereço completo) podem criar alertas, e quem decide isso é o **próprio banco de dados**, não apenas o código PHP.
 
 ---
 
 ## Funcionalidades
 
-### Usuários
+### Público (sem login)
 
-- Cadastro de novos usuários;
-- Login e logout;
-- Gerenciamento de sessão;
-- Proteção contra CSRF;
-- Controle de acesso baseado em papéis;
-- Visualização do perfil do usuário autenticado;
-- Criação de ocorrências ambientais;
-- Visualização das ocorrências registradas no mapa;
-- Exclusão de ocorrências;
-- Contagem de ocorrências cadastradas por usuário.
+- Página inicial de apresentação do projeto;
+- Mapa com todas as ocorrências, com filtro por tipo e período;
+- Nenhum dado pessoal de quem registrou aparece no mapa.
 
-### Ocorrências ambientais
+### Usuário
 
-O usuário pode acessar o mapa, localizar uma rua ou região e registrar uma ocorrência ambiental naquele ponto.
+- Cadastro, login e logout;
+- **Minha conta:** nome, CPF e endereço (com preenchimento automático pelo CEP via ViaCEP);
+- Registro de ocorrência: clicar no mapa, escolher o tipo e descrever;
+- Tema claro e escuro (vale também para o mapa).
 
-Cada sinalização representa um evento identificado pelo usuário, como:
+### Administrador
 
-- Uma área com histórico ou ocorrência de **enchente**;
-- Um local afetado por **erosão**;
-- Uma região com risco ou ocorrência de **queda de talude**.
+- Lista de usuários com contagem de ocorrências e situação da conta (validada / pendente);
+- Edição e exclusão de ocorrências (com 5 segundos para desfazer);
+- Consulta do registro de auditoria (logs);
+- Limpeza de ocorrências antigas.
 
-Dessa forma, o mapa funciona como um painel colaborativo de informações, permitindo que os usuários tenham uma visão geral das ocorrências registradas na cidade.
+### Regras validadas pelo banco (procedure `sp_registrar_ocorrencia`)
 
-### Administração
+Todo alerta passa por estas regras dentro do MySQL antes de ser gravado:
 
-O sistema também possui uma área administrativa destinada ao gerenciamento da aplicação, incluindo:
+| Regra | Se falhar |
+|---|---|
+| Sessão válida e não expirada | 401 |
+| Conta validada (nome + CPF + endereço) | 403 |
+| Tipo de ocorrência existente | 400 |
+| Ponto dentro do território brasileiro | 400 |
+| Máximo de 10 alertas por hora por usuário | 429 |
+| Sem alerta repetido no mesmo ponto em 30 min | 409 |
 
-- Visualização de usuários;
-- Consulta de logs do sistema;
-- Controle de informações administrativas.
+O CPF também é conferido pelo banco (cálculo dos dígitos verificadores em uma `CHECK`), não pode se repetir e não pode ser alterado depois de salvo.
 
 ---
 
-# Arquitetura do Projeto
+## Arquitetura
 
-A aplicação foi organizada separando as responsabilidades entre **configuração, banco de dados, regras de negócio, API e interface pública**.
+O projeto separa as responsabilidades em camadas:
+
+> **`public/`, `css/`, `js/` → Interface do usuário**
+> **`api/` → Comunicação HTTP (REST/JSON)**
+> **`src/` → Regras de negócio e segurança**
+> **`database/` → Estrutura e regras dos dados**
+> **`config/` → Configurações da aplicação**
 
 ```text
-projeto/
-├── config/
-│   └── config.php
+Usuário → Frontend (public/, js/) → Requisição HTTP → API (api/) → Domínio (src/) → MySQL (procedures, view, CHECKs)
+```
+
+### Estrutura de pastas
+
+```text
+├── api/
+│   ├── auth/            register, login, logout, me, profile
+│   ├── incidents/       index.php (GET lista / POST cria)
+│   ├── admin/           users, incidents, logs, purge
+│   └── controllers/     AuthController, OcorrenciaController, AdminController
+│
+├── src/                 camada de domínio (PHP puro, orientado a objetos)
+│   ├── bootstrap.php    carregado por todo endpoint: config, autoload, cabeçalhos, erros
+│   ├── Database.php     conexão PDO (Singleton)
+│   ├── Usuario.php      cadastro, login, perfil, validação de CPF e senha
+│   ├── Ocorrencia.php   registro (via procedure), listagem, edição, exclusão
+│   ├── Categoria.php, FiltroOcorrencia.php, RegistroAuditoria.php
+│   ├── Sessao.php       token de sessão, CSRF, expiração
+│   ├── LimiteLogin.php  limite de tentativas de login e cadastro
+│   ├── Request.php, Response.php, HttpException.php, DbErro.php, env.php
 │
 ├── database/
-│   └── schema.sql
+│   ├── schema.sql           tabelas, CHECKs, view e procedures
+│   ├── gatilhos_extra.sql   gatilhos opcionais (camada extra)
+│   ├── migracao_v2_seguranca.sql, migracao_v3.sql
+│   ├── importar.php         monta o banco pelo terminal
+│   ├── criar_admin.php      cria ou promove um administrador
+│   ├── diagnostico.php      testa a conexão com o banco passo a passo
+│   ├── backup.php, restaurar.php
+│   └── usuario_app.sql      usuário do banco com privilégio mínimo
 │
-├── src/
-│   ├── Database.php
-│   ├── Response.php
-│   ├── Auth.php
-│   └── Occurrence.php
-│
-├── api/
-│   ├── auth/
-│   │   ├── register.php
-│   │   ├── login.php
-│   │   ├── logout.php
-│   │   └── me.php
-│   │
-│   ├── occurrences/
-│   │   ├── list.php
-│   │   ├── create.php
-│   │   └── delete.php
-│   │
-│   └── admin/
-│       ├── users.php
-│       └── logs.php
-│
-└── public/
-    ├── index.html
-    ├── login.html
-    ├── register.html
-    ├── admin.html
-    │
-    ├── css/
-    │   ├──admin.css
-    │   ├──admin.css
-    │   ├──auth.css
-    │   ├──base.css
-    │   ├──dashboard.css
-    │   ├──styles.css
-    │
-    └── js/
-        ├── api.js
-        ├── auth.js
-        ├── dashboard.js
-        └── admin.js
+├── public/              home, index (mapa), login, register, perfil, admin
+├── css/                 base, home, dashboard, auth, admin
+├── js/                  api, auth, forms, theme, maps, dashboard, perfil, admin, home
+├── fonts/, img/
+├── config/config.example.php   modelo da configuração (copie para config.php)
+├── js/config.example.js        modelo da chave do Google Maps (copie para config.js)
+├── .env.example                modelo das variáveis de ambiente
+├── router.php                  roteador para o servidor embutido do PHP
+├── .htaccess, index.php        regras para Apache
+└── discloud.config             configuração da hospedagem
 ```
 
----
+### Banco de dados
 
-## Estrutura das Pastas
-
-### `config/`
-
-Contém as configurações gerais do sistema.
-
-#### `config.php`
-
-Arquivo responsável por centralizar configurações como:
-
-- Credenciais de acesso ao banco de dados;
-- Configuração de sessão;
-- Timezone da aplicação;
-- Outras configurações necessárias para o funcionamento do sistema.
-
----
-
-### `database/`
-
-Contém os arquivos relacionados à estrutura do banco de dados.
-
-#### `schema.sql`
-
-Responsável pela criação das tabelas e estrutura completa do banco de dados.
-
-Também pode incluir dados iniciais, como a criação de um usuário administrador (**admin seed**).
-
----
-
-### `src/`
-
-Representa a **camada de domínio da aplicação**, onde estão concentradas as principais regras de negócio.
-
-As classes dessa pasta utilizam PHP puro e são responsáveis pela lógica principal do sistema.
-
-#### `Database.php`
-
-Responsável pela conexão com o banco de dados utilizando **PDO**.
-
-A conexão utiliza o padrão **Singleton**, garantindo um ponto centralizado para acesso ao banco de dados.
-
-#### `Response.php`
-
-Classe auxiliar responsável por padronizar as respostas da API em formato **JSON**.
-
-Isso permite que os endpoints retornem informações de maneira organizada e consistente.
-
-#### `Auth.php`
-
-Responsável pelas funcionalidades relacionadas à autenticação e segurança dos usuários:
-
-- Registro;
-- Login;
-- Logout;
-- Controle de sessão;
-- Proteção CSRF;
-- Controle de papéis e permissões.
-
-#### `Occurrence.php`
-
-Responsável pelas regras relacionadas às ocorrências ambientais.
-
-Principais responsabilidades:
-
-- Criar ocorrências;
-- Listar ocorrências;
-- Excluir ocorrências;
-- Associar ocorrências aos usuários;
-- Realizar a contagem de ocorrências cadastradas por cada usuário.
-
----
-
-### `api/`
-
-A pasta `api` representa a **porta de entrada HTTP da aplicação**.
-
-Os arquivos presentes nela recebem as requisições do frontend, utilizam as classes da camada `src` e retornam as informações em formato JSON.
-
-#### Autenticação
-
-```text
-api/auth/
-├── register.php
-├── login.php
-├── logout.php
-└── me.php
-```
-
-Endpoints responsáveis pelo gerenciamento da autenticação dos usuários.
-
-#### Ocorrências
-
-```text
-api/occurrences/
-├── list.php
-├── create.php
-└── delete.php
-```
-
-Endpoints responsáveis pelas operações relacionadas às ocorrências ambientais.
-
-#### Administração
-
-```text
-api/admin/
-├── users.php
-└── logs.php
-```
-
-Endpoints utilizados pela área administrativa para gerenciamento e consulta de informações do sistema.
-
----
-
-### `public/`
-
-Contém todos os arquivos acessados diretamente pelo navegador.
-
-Essa camada representa o **frontend da aplicação**.
-
-#### Páginas principais
-
-| Arquivo | Descrição |
+| Tabela | Conteúdo |
 |---|---|
-| `index.html` | Dashboard principal com o mapa e as ocorrências |
-| `login.html` | Página de autenticação |
-| `register.html` | Página de cadastro de usuários |
-| `admin.html` | Painel administrativo |
+| `usuario` | nome, e-mail, hash da senha, perfil, CPF e endereço |
+| `sessao` | hash do token de sessão, token CSRF, expiração |
+| `tentativa_login` | tentativas de login e cadastro (limite contra força bruta) |
+| `categoria` | alagamento, erosão, talude |
+| `ocorrencia` | tipo, descrição, endereço, latitude, longitude, data e hora |
+| `registro_auditoria` | quem fez o quê e quando |
 
-#### CSS
+Além das tabelas: a view `vw_usuario_validado` (diz se a conta está completa) e as procedures `sp_registrar_ocorrencia` e `sp_atualizar_perfil`.
 
-```text
-public/css/
-└── styles.css
-```
+## Documentação complementar
 
-Responsável pela estilização e aparência visual da aplicação.
-
-#### JavaScript
-
-```text
-public/js/
-├── api.js
-├── auth.js
-├── dashboard.js
-└── admin.js
-```
-
-Cada arquivo possui uma responsabilidade específica:
-
-- **api.js:** comunicação entre o frontend e a API;
-- **auth.js:** gerenciamento da autenticação no frontend;
-- **dashboard.js:** funcionamento do mapa e das ocorrências;
-- **admin.js:** funcionalidades do painel administrativo.
+- **[SEGURANCA.md](SEGURANCA.md):** vulnerabilidades tratadas, correções e configurações de produção.
+- **[DISCLOUD.md](DISCLOUD.md):** passo a passo da publicação e do banco na Discloud.
 
 ---
 
-# Fluxo de Funcionamento
+## Publicação (Discloud)
 
-O funcionamento da aplicação segue o fluxo abaixo:
-
-```text
-Usuário
-   ↓
-Frontend
-(public/)
-   ↓
-Requisição HTTP
-   ↓
-API
-(api/)
-   ↓
-Regras de Negócio
-(src/)
-   ↓
-Banco de Dados
-(database/)
-```
-
-### Exemplo de sinalização de uma ocorrência
-
-1. O usuário realiza o login na plataforma;
-2. Acessa o dashboard principal;
-3. Visualiza o mapa da região;
-4. Localiza a rua ou área onde identificou um problema ambiental;
-5. Clica no ponto desejado do mapa;
-6. Seleciona o tipo de ocorrência;
-7. A ocorrência é enviada para a API;
-8. A API processa os dados através da camada de domínio;
-9. As informações são armazenadas no banco de dados;
-10. O ponto sinalizado passa a ficar disponível para visualização dos usuários da aplicação.
+O site está hospedado na **Discloud** (plano Diamond), com o banco **MySQL** na rede privada (VLAN), sem acesso pela internet.
 
 ---
 
-# Tecnologias Utilizadas
+## Tecnologias
 
-O projeto utiliza uma arquitetura baseada em tecnologias web:
-
-### Backend
-
-- **PHP**
-- **PDO**
-- **API REST**
-- **Sessões**
-- **JSON**
-
-### Frontend
-
-- **HTML5**
-- **CSS3**
-- **JavaScript**
-
-### Banco de Dados
-
-- Banco de dados relacional;
-- Estrutura definida através do arquivo `schema.sql`.
+| Camada | Tecnologias |
+|---|---|
+| Backend | PHP 8.1+ (sem framework), PDO, API REST, JSON |
+| Banco | MySQL 8/9 ou MariaDB: CHECK, VIEW, PROCEDURE |
+| Frontend | HTML5, CSS3, JavaScript, Bootstrap Icons |
+| Mapas | Google Maps JavaScript API, Geocoding API, Nominatim |
+| Outros serviços | ViaCEP (endereço pelo CEP) |
+| Hospedagem | Discloud (Apache + PHP, MySQL gerenciado) |
 
 ---
 
-# Objetivo Acadêmico
+## Versões
 
-Este projeto foi desenvolvido com o objetivo de aplicar conhecimentos adquiridos durante a graduação, envolvendo conceitos como:
+| Versão | O que mudou |
+|---|---|
+| `v0.0.1` | Primeira versão: frontend com mapa, tema escuro/claro e layout do painel |
+| `v0.1.0` | Backend PHP + MySQL, API REST, validação de alertas pelo banco, camada de segurança, redesign com página inicial e perfil, deploy na Discloud |
 
-- Desenvolvimento Web;
-- Arquitetura de Software;
-- Separação de Responsabilidades;
-- Programação Orientada a Objetos;
-- Desenvolvimento de APIs;
-- Comunicação entre Frontend e Backend;
-- Autenticação e Controle de Sessão;
-- Segurança em aplicações web;
-- Banco de Dados;
-- CRUD;
-- Sistemas colaborativos;
-- Aplicação da tecnologia na solução de problemas ambientais.
-
-Além do aspecto técnico, o projeto busca demonstrar como uma aplicação web pode ser utilizada para **conectar a população a informações importantes sobre problemas ambientais presentes nas cidades**.
+O projeto segue o [versionamento semântico](https://semver.org/lang/pt-BR/): correção → `v0.1.1`, funcionalidade nova → `v0.2.0`.
 
 ---
 
-# Objetivo do Sistema
+## Objetivo acadêmico
 
-A proposta principal é disponibilizar uma plataforma onde os próprios usuários possam colaborar com a identificação de situações ambientais que afetam suas regiões.
+O projeto aplica conhecimentos da graduação em:
 
-Ao permitir a marcação de ocorrências como **enchentes, erosões e quedas de talude diretamente no mapa**, o sistema transforma informações individuais em um painel coletivo de visualização.
+- Desenvolvimento web e arquitetura de software em camadas;
+- Programação orientada a objetos e modelagem UML (casos de uso, classes e sequência);
+- Desenvolvimento de APIs REST e comunicação frontend ↔ backend;
+- Banco de dados relacional com regras de integridade no próprio banco;
+- Autenticação, controle de sessão e segurança em aplicações web;
+- Versionamento com Git e publicação em nuvem;
+- Uso da tecnologia na solução de problemas ambientais.
 
-Assim, a aplicação pode ajudar os usuários a:
-
-- Identificar áreas com problemas ambientais;
-- Visualizar ocorrências registradas por outros usuários;
-- Compartilhar informações sobre situações de risco;
-- Aumentar a conscientização ambiental;
-- Facilitar a visualização geográfica dos problemas enfrentados pelas cidades.
-
----
-
-## Estrutura e Organização
-
-O projeto foi desenvolvido seguindo uma organização que busca facilitar sua manutenção e evolução:
-
-> **`public` → Interface do usuário**  
-> **`api` → Comunicação HTTP**  
-> **`src` → Regras de negócio**  
-> **`database` → Estrutura dos dados**  
-> **`config` → Configurações da aplicação**
-
-Essa separação permite uma arquitetura mais organizada, evitando que regras de negócio, acesso ao banco de dados e interface do usuário fiquem concentrados no mesmo local.
-
----
-
-## Autor
-
-Projeto desenvolvido como **trabalho acadêmico**, com foco na aplicação de tecnologias web para a criação de uma solução voltada ao **monitoramento colaborativo de ocorrências ambientais urbanas**.
----
-
-## Interface (redesenho)
-
-A interface foi redesenhada com um sistema visual único para todas as telas:
-
-- **Tema claro e escuro:** botão em todas as páginas; a escolha vale para a interface e para o mapa (`js/theme.js`). Sem escolha salva, segue o tema do sistema.
-- **Google Maps:** os mapas usam a Maps JavaScript API (`js/maps.js`). A chave fica em `js/config.js`; o nome da rua vem do Geocoder da Google e, se ele falhar, do Nominatim (OpenStreetMap).
-- **`public/home.html`:** nova página inicial pública, que apresenta o projeto e leva ao mapa e ao cadastro.
-- **`css/base.css`:** cores, tipografia (Archivo e Inter, em `fonts/`), botões e campos compartilhados.
-- **`js/forms.js`:** validação do login e do cadastro, com erro embaixo de cada campo.
-- **`js/dashboard.js`:** o texto digitado pelo usuário é escapado antes de ir para a tela (evita injeção de HTML), a remoção de alerta tem 5 segundos para desfazer e não há mais `alert()`.
-
-Os `id`s, os `name`s e os `action`s dos formulários continuam os mesmos, então a integração com a API em PHP não muda.
-
-### Configurando a chave do Google Maps
-
-1. Acesse o [Google Cloud Console](https://console.cloud.google.com/), crie um projeto e ative o faturamento (a Google dá um crédito mensal gratuito que cobre um projeto acadêmico).
-2. Em **APIs e serviços → Biblioteca**, ative a **Maps JavaScript API** e a **Geocoding API**.
-3. Em **APIs e serviços → Credenciais**, crie uma **chave de API**.
-4. Restrinja a chave: em *Restrições de aplicativo*, escolha **Referenciadores HTTP** e adicione `http://localhost:*/*` e `http://127.0.0.1:*/*` (e o domínio, se publicar o site). Em *Restrições de API*, deixe só as duas APIs acima.
-5. Copie `js/config.example.js` para `js/config.js` (se ainda não existir) e cole a chave no campo `GOOGLE_MAPS_API_KEY`. O `js/config.js` está no `.gitignore` e não vai para o GitHub; quem clonar o repositório cria o próprio a partir do modelo.
-6. Abra o projeto por um servidor local (Live Server, `python -m http.server` ou `npx serve`), não com dois cliques no arquivo, para a restrição por endereço funcionar.
-
-Sem chave, o mapa mostra um aviso no lugar e o restante da página continua funcionando.
-
----
-
-## Como rodar com o back-end (XAMPP)
-
-Requisitos: [XAMPP](https://www.apachefriends.org/) com PHP 8.1 ou mais novo (as versões atuais já vêm assim).
-
-1. **Copie o projeto** para dentro de `C:\xampp\htdocs\` (no Windows). Exemplo: `C:\xampp\htdocs\a3\` com as pastas `api`, `src`, `public` etc. dentro.
-2. **Ligue Apache e MySQL** no XAMPP Control Panel (botões *Start*).
-3. **Crie o banco** pelo terminal, na pasta do projeto: `C:\xampp\php\php.exe database\importar.php`
-   (ou pelo phpMyAdmin: importe `database/schema.sql` e depois `database/gatilhos_extra.sql`).
-   **Banco de uma versão anterior?** `C:\xampp\php\php.exe database\importar.php --arquivo=database/migracao_v3.sql` (mantém os dados; se ainda está na versão 1, rode antes o `migracao_v2_seguranca.sql` no phpMyAdmin).
-4. **Configure o back-end:** copie `config/config.example.php` para `config/config.php`. Com o XAMPP padrão (usuário `root` sem senha) não precisa mudar nada.
-5. **Configure o mapa:** copie `js/config.example.js` para `js/config.js` e cole a chave do Google Maps (seção acima). Na chave, libere também `http://localhost/*`.
-6. **Abra:** http://localhost/a3/public/home.html (troque `a3` pelo nome da sua pasta).
-
-**Administrador:** não existe mais senha padrão. Crie o seu pelo terminal, na pasta do projeto:
-`C:\xampp\php\php.exe database\criar_admin.php`
-(Se você ainda tem o `admin@exemplo.com` da versão anterior, rode o mesmo comando com esse e-mail para trocar a senha.)
-
-**Para criar alertas** a conta precisa estar validada: nome, CPF válido e endereço completo, em **Minha conta** (`public/perfil.html`). O banco recusa alertas de contas sem isso.
-
-> Com o PHP do XAMPP pelo terminal (sem Apache): `C:\xampp\php\php.exe -S localhost:8000 router.php` e abra http://localhost:8000/. O `router.php` faz o papel do `.htaccess` (bloqueia pastas internas e envia os cabeçalhos de segurança); não rode sem ele.
-
-### Rotas da API
-
-As rotas seguem os diagramas de sequência; em PHP sem framework, cada uma é um arquivo:
-
-| Rota (UML) | Arquivo | Acesso |
-|---|---|---|
-| `POST /auth/register` | `api/auth/register.php` | público |
-| `POST /auth/login` | `api/auth/login.php` | público |
-| `POST /auth/logout` | `api/auth/logout.php` | logado |
-| `GET /auth/me` | `api/auth/me.php` | público (diz quem está logado) |
-| `GET /incidents?categoria=&de=&ate=` | `api/incidents/` (GET) | público, sem dados pessoais |
-| `POST /incidents` | `api/incidents/` (POST) | logado |
-| `GET /admin/users` | `api/admin/users.php` | administrador |
-| `PUT /admin/incidents/{id}` | `api/admin/incidents.php?id={id}` (PUT) | administrador |
-| `DELETE /admin/incidents/{id}` | `api/admin/incidents.php?id={id}` (DELETE) | administrador |
-| `GET /admin/logs` | `api/admin/logs.php` | administrador |
-| `POST /admin/purge` | `api/admin/purge.php` | administrador |
-
-Respostas sempre em JSON; erros vêm como `{"erro": "mensagem", "campos": {...}}` com o status HTTP certo (400, 401, 403, 404, 409, 422).
-
-### Segurança implementada
-
-Relatório completo (vulnerabilidades, correções e configurações de produção): **[SEGURANCA.md](SEGURANCA.md)**.
-Publicação na Discloud: **[DISCLOUD.md](DISCLOUD.md)**.
-
-
-- Senhas com `password_hash()` (bcrypt); o banco nunca guarda a senha.
-- Sessão por token aleatório em cookie `HttpOnly` + `SameSite=Lax`; o banco guarda só o hash SHA-256 do token, com expiração (8 h, em `config.php`).
-- Token CSRF exigido em todo POST, PUT e DELETE de quem está logado (cabeçalho `X-CSRF-Token`, enviado por `js/api.js`).
-- Perfil `ADMINISTRADOR` conferido em toda rota `/admin/*` (tentativas negadas vão para a auditoria).
-- Consultas preparadas com PDO (sem SQL montado com texto do usuário).
-- Toda criação, edição, exclusão, login e falha de login fica em `registro_auditoria`.
-- `config/`, `src/`, `database/` e `api/controllers/` bloqueados para acesso direto pelo navegador (`.htaccess`).
+Além do aspecto técnico, o projeto mostra como uma aplicação web pode **conectar a população a informações importantes sobre problemas ambientais nas cidades**, transformando sinalizações individuais em um painel coletivo.
