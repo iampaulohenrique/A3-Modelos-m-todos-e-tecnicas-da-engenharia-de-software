@@ -1,0 +1,11 @@
+# Não enviar para a Discloud
+.git/
+.vscode/
+node_modules/
+vendor/
+backups/
+shots/
+*.zip
+*.log
+Thumbs.db
+.DS_Store
