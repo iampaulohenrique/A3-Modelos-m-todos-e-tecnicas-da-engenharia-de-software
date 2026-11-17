@@ -1,0 +1,19 @@
+{
+    "name": "a3/monitoramento-ocorrencias",
+    "description": "Sistema de Monitoramento de Ocorrências Ambientais (A3)",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "ext-mbstring": "*"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "scripts": {
+        "audit": "composer audit --locked"
+    }
+}

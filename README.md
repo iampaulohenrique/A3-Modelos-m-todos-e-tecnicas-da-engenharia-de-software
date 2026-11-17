@@ -382,3 +382,85 @@ Essa separação permite uma arquitetura mais organizada, evitando que regras de
 ## Autor
 
 Projeto desenvolvido como **trabalho acadêmico**, com foco na aplicação de tecnologias web para a criação de uma solução voltada ao **monitoramento colaborativo de ocorrências ambientais urbanas**.
+---
+
+## Interface (redesenho)
+
+A interface foi redesenhada com um sistema visual único para todas as telas:
+
+- **Tema claro e escuro:** botão em todas as páginas; a escolha vale para a interface e para o mapa (`js/theme.js`). Sem escolha salva, segue o tema do sistema.
+- **Google Maps:** os mapas usam a Maps JavaScript API (`js/maps.js`). A chave fica em `js/config.js`; o nome da rua vem do Geocoder da Google e, se ele falhar, do Nominatim (OpenStreetMap).
+- **`public/home.html`:** nova página inicial pública, que apresenta o projeto e leva ao mapa e ao cadastro.
+- **`css/base.css`:** cores, tipografia (Archivo e Inter, em `fonts/`), botões e campos compartilhados.
+- **`js/forms.js`:** validação do login e do cadastro, com erro embaixo de cada campo.
+- **`js/dashboard.js`:** o texto digitado pelo usuário é escapado antes de ir para a tela (evita injeção de HTML), a remoção de alerta tem 5 segundos para desfazer e não há mais `alert()`.
+
+Os `id`s, os `name`s e os `action`s dos formulários continuam os mesmos, então a integração com a API em PHP não muda.
+
+### Configurando a chave do Google Maps
+
+1. Acesse o [Google Cloud Console](https://console.cloud.google.com/), crie um projeto e ative o faturamento (a Google dá um crédito mensal gratuito que cobre um projeto acadêmico).
+2. Em **APIs e serviços → Biblioteca**, ative a **Maps JavaScript API** e a **Geocoding API**.
+3. Em **APIs e serviços → Credenciais**, crie uma **chave de API**.
+4. Restrinja a chave: em *Restrições de aplicativo*, escolha **Referenciadores HTTP** e adicione `http://localhost:*/*` e `http://127.0.0.1:*/*` (e o domínio, se publicar o site). Em *Restrições de API*, deixe só as duas APIs acima.
+5. Copie `js/config.example.js` para `js/config.js` (se ainda não existir) e cole a chave no campo `GOOGLE_MAPS_API_KEY`. O `js/config.js` está no `.gitignore` e não vai para o GitHub; quem clonar o repositório cria o próprio a partir do modelo.
+6. Abra o projeto por um servidor local (Live Server, `python -m http.server` ou `npx serve`), não com dois cliques no arquivo, para a restrição por endereço funcionar.
+
+Sem chave, o mapa mostra um aviso no lugar e o restante da página continua funcionando.
+
+---
+
+## Como rodar com o back-end (XAMPP)
+
+Requisitos: [XAMPP](https://www.apachefriends.org/) com PHP 8.1 ou mais novo (as versões atuais já vêm assim).
+
+1. **Copie o projeto** para dentro de `C:\xampp\htdocs\` (no Windows). Exemplo: `C:\xampp\htdocs\a3\` com as pastas `api`, `src`, `public` etc. dentro.
+2. **Ligue Apache e MySQL** no XAMPP Control Panel (botões *Start*).
+3. **Crie o banco** pelo terminal, na pasta do projeto: `C:\xampp\php\php.exe database\importar.php`
+   (ou pelo phpMyAdmin: importe `database/schema.sql` e depois `database/gatilhos_extra.sql`).
+   **Banco de uma versão anterior?** `C:\xampp\php\php.exe database\importar.php --arquivo=database/migracao_v3.sql` (mantém os dados; se ainda está na versão 1, rode antes o `migracao_v2_seguranca.sql` no phpMyAdmin).
+4. **Configure o back-end:** copie `config/config.example.php` para `config/config.php`. Com o XAMPP padrão (usuário `root` sem senha) não precisa mudar nada.
+5. **Configure o mapa:** copie `js/config.example.js` para `js/config.js` e cole a chave do Google Maps (seção acima). Na chave, libere também `http://localhost/*`.
+6. **Abra:** http://localhost/a3/public/home.html (troque `a3` pelo nome da sua pasta).
+
+**Administrador:** não existe mais senha padrão. Crie o seu pelo terminal, na pasta do projeto:
+`C:\xampp\php\php.exe database\criar_admin.php`
+(Se você ainda tem o `admin@exemplo.com` da versão anterior, rode o mesmo comando com esse e-mail para trocar a senha.)
+
+**Para criar alertas** a conta precisa estar validada: nome, CPF válido e endereço completo, em **Minha conta** (`public/perfil.html`). O banco recusa alertas de contas sem isso.
+
+> Com o PHP do XAMPP pelo terminal (sem Apache): `C:\xampp\php\php.exe -S localhost:8000 router.php` e abra http://localhost:8000/. O `router.php` faz o papel do `.htaccess` (bloqueia pastas internas e envia os cabeçalhos de segurança); não rode sem ele.
+
+### Rotas da API
+
+As rotas seguem os diagramas de sequência; em PHP sem framework, cada uma é um arquivo:
+
+| Rota (UML) | Arquivo | Acesso |
+|---|---|---|
+| `POST /auth/register` | `api/auth/register.php` | público |
+| `POST /auth/login` | `api/auth/login.php` | público |
+| `POST /auth/logout` | `api/auth/logout.php` | logado |
+| `GET /auth/me` | `api/auth/me.php` | público (diz quem está logado) |
+| `GET /incidents?categoria=&de=&ate=` | `api/incidents/` (GET) | público, sem dados pessoais |
+| `POST /incidents` | `api/incidents/` (POST) | logado |
+| `GET /admin/users` | `api/admin/users.php` | administrador |
+| `PUT /admin/incidents/{id}` | `api/admin/incidents.php?id={id}` (PUT) | administrador |
+| `DELETE /admin/incidents/{id}` | `api/admin/incidents.php?id={id}` (DELETE) | administrador |
+| `GET /admin/logs` | `api/admin/logs.php` | administrador |
+| `POST /admin/purge` | `api/admin/purge.php` | administrador |
+
+Respostas sempre em JSON; erros vêm como `{"erro": "mensagem", "campos": {...}}` com o status HTTP certo (400, 401, 403, 404, 409, 422).
+
+### Segurança implementada
+
+Relatório completo (vulnerabilidades, correções e configurações de produção): **[SEGURANCA.md](SEGURANCA.md)**.
+Publicação na Discloud: **[DISCLOUD.md](DISCLOUD.md)**.
+
+
+- Senhas com `password_hash()` (bcrypt); o banco nunca guarda a senha.
+- Sessão por token aleatório em cookie `HttpOnly` + `SameSite=Lax`; o banco guarda só o hash SHA-256 do token, com expiração (8 h, em `config.php`).
+- Token CSRF exigido em todo POST, PUT e DELETE de quem está logado (cabeçalho `X-CSRF-Token`, enviado por `js/api.js`).
+- Perfil `ADMINISTRADOR` conferido em toda rota `/admin/*` (tentativas negadas vão para a auditoria).
+- Consultas preparadas com PDO (sem SQL montado com texto do usuário).
+- Toda criação, edição, exclusão, login e falha de login fica em `registro_auditoria`.
+- `config/`, `src/`, `database/` e `api/controllers/` bloqueados para acesso direto pelo navegador (`.htaccess`).

@@ -1,0 +1,17 @@
+# variáveis de ambiente (senhas)
+.env
+
+# chave do Google Maps e outras configurações locais
+js/config.js
+
+# configuração do backend (senha do banco)
+config/config.php
+
+# sistema / editor
+.DS_Store
+Thumbs.db
+.vscode/
+node_modules/
+
+vendor/
+backups/
