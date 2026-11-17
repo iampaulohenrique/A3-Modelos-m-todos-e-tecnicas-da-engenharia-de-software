@@ -516,3 +516,14 @@ section[id] { scroll-margin-top: 72px; }
 
 .site-nav .user-name { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (max-width: 1280px) { .site-nav .auth-slot .user-chip { display: none; } }
+
+/* ---------- menu lateral na página inicial ---------- */
+.home-shell { display: flex; align-items: flex-start; }
+.home-page { flex: 1; min-width: 0; }
+.side-nav .nav-sections { display: none; }          /* no computador as seções já estão no topo */
+@media (min-width: 901px) {
+  .home-shell > .side-nav { position: sticky; top: 0; height: 100vh; height: 100dvh; }
+}
+@media (max-width: 900px) {
+  .side-nav .nav-sections { display: grid; }
+}

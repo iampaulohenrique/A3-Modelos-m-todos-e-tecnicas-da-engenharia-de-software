@@ -1,0 +1,150 @@
+/* =========================================================
+   Menu lateral (mapa e painel admin)
+   Desktop: trilho fixo à esquerda, expande com rótulos ou recolhe só com ícones.
+   Celular/tablet (≤ 900px): gaveta que abre pelo botão ☰ do cabeçalho.
+   ========================================================= */
+
+.side-nav {
+  --nav-w: 232px;
+  width: var(--nav-w);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 10px;
+  background: var(--surface);
+  border-right: 1px solid var(--hairline);
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: width .2s ease;
+}
+.side-nav.is-collapsed { --nav-w: 68px; }
+
+.nav-group { display: grid; gap: 2px; }
+.nav-group + .nav-group { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--hairline); }
+.nav-group.nav-bottom { margin-top: auto; }
+
+.nav-heading {
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  padding: 6px 12px 4px;
+  white-space: nowrap;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--ink-mute);
+  font: 600 .9rem/1.2 var(--font-text);
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color .15s ease, background-color .15s ease;
+}
+.nav-item i { font-size: 1.1rem; width: 20px; text-align: center; flex: none; }
+.nav-item:hover { color: var(--ink); background: var(--surface-2); }
+.nav-item:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.nav-item[aria-current="page"] { color: var(--brand); background: var(--brand-soft); }
+.nav-item.nav-cta { color: var(--on-brand); background: var(--brand); }
+.nav-item.nav-cta:hover { background: var(--brand-press); }
+.nav-item.nav-danger:hover { color: var(--talude); background: color-mix(in srgb, var(--talude) 10%, transparent); }
+.nav-label { overflow: hidden; text-overflow: ellipsis; }
+
+/* usuário logado */
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 6px 10px;
+  border-radius: var(--r-sm);
+  color: var(--ink);
+  text-decoration: none;
+}
+.nav-user:hover { background: var(--surface-2); }
+.nav-user:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.nav-avatar {
+  flex: none;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font: 700 .85rem/1 var(--font-display);
+}
+.nav-user-text { display: grid; min-width: 0; line-height: 1.25; }
+.nav-user-name { font-weight: 700; font-size: .9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-user-role { font-size: .75rem; color: var(--ink-mute); white-space: nowrap; }
+.nav-user-role.is-admin { color: var(--talude); font-weight: 600; }
+
+/* botão de recolher */
+.nav-collapse { justify-content: flex-start; }
+.side-nav.is-collapsed .nav-collapse i { transform: scaleX(-1); }
+
+/* recolhido: só ícones (o nome aparece no title / aria-label) */
+.side-nav.is-collapsed .nav-label,
+.side-nav.is-collapsed .nav-heading,
+.side-nav.is-collapsed .nav-user-text { display: none; }
+.side-nav.is-collapsed .nav-item,
+.side-nav.is-collapsed .nav-user { justify-content: center; padding: 0; }
+
+/* botão ☰ do cabeçalho e fundo escuro: só no celular */
+.nav-open-btn { display: none; }
+.nav-backdrop { display: none; }
+
+@media (min-width: 901px) and (max-width: 1100px) {
+  /* telas médias: trilho sempre recolhido para sobrar espaço ao mapa */
+  .side-nav { --nav-w: 68px; }
+  .side-nav .nav-label, .side-nav .nav-heading, .side-nav .nav-user-text { display: none; }
+  .side-nav .nav-item, .side-nav .nav-user { justify-content: center; padding: 0; }
+  .nav-collapse { display: none; }
+}
+
+@media (max-width: 900px) {
+  .nav-open-btn { display: inline-grid; }
+  .side-nav,
+  .side-nav.is-collapsed {
+    --nav-w: min(280px, 84vw);
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 2000;
+    height: 100dvh;
+    padding-top: 16px;
+    box-shadow: 0 0 40px rgb(0 0 0 / .25);
+    transform: translateX(-105%);
+    visibility: hidden;
+    transition: transform .22s ease, visibility 0s linear .22s;
+  }
+  .side-nav.is-open {
+    transform: none;
+    visibility: visible;
+    transition: transform .22s ease;
+  }
+  /* na gaveta os rótulos sempre aparecem */
+  .side-nav.is-collapsed .nav-label,
+  .side-nav.is-collapsed .nav-heading,
+  .side-nav.is-collapsed .nav-user-text { display: revert; }
+  .side-nav.is-collapsed .nav-item,
+  .side-nav.is-collapsed .nav-user { justify-content: flex-start; padding: 0 12px; }
+  .nav-collapse { display: none; }
+
+  .nav-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1999;
+    background: rgb(0 0 0 / .45);
+  }
+  .nav-backdrop.is-open { display: block; }
+  body.nav-locked { overflow: hidden; }
+}
